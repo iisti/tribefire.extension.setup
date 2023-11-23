@@ -37,11 +37,4 @@ public interface Entrypoint extends GenericEntity{
 	CustomAssetMetaData getDisplayInfo();
 	void setDisplayInfo(CustomAssetMetaData assetConfig);
 	
-	/**
-	 * @return - a derived relative path the translated data of the asset
-	 */
-	default String getTargetUrl() {
-		String assetPath = getAssetId().replace(":", "/");
-		return  assetPath + "/" + getDisplayInfo().getStartingPoint().replaceAll("\\.md$", ".html");
-	}
 }
