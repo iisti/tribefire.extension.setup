@@ -951,7 +951,7 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 	private Neutral installLicense(ServiceRequestContext requestContext, InstallLicense request) {
 
 		Resource license = request.getFile();
-		LicenseTools.validateLicense(license::openStream, license);
+		//LicenseTools.validateLicense(license::openStream, license);
 		
 		PlatformAsset project = PlatformAsset.T.create();
 		project.setGroupId("tribefire.cortex.assets");
