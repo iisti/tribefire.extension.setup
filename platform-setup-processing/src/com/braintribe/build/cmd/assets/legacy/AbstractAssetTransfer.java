@@ -37,7 +37,6 @@ import com.braintribe.model.asset.PlatformAsset;
 import com.braintribe.model.asset.PlatformAssetDependency;
 import com.braintribe.model.asset.natures.AssetAggregator;
 import com.braintribe.model.asset.natures.ContainerProjection;
-import com.braintribe.model.asset.natures.LicensePriming;
 import com.braintribe.model.asset.natures.ManipulationPriming;
 import com.braintribe.model.asset.natures.ModelPriming;
 import com.braintribe.model.asset.natures.PlatformAssetNature;
@@ -119,7 +118,6 @@ public abstract class AbstractAssetTransfer {
 		registerNaturePartExpert(AssetAggregator.T, AbstractAssetTransfer::createNoParts);
 		registerNaturePartExpert(ContainerProjection.T, AbstractAssetTransfer::createNoParts);
 		registerNaturePartExpert(RuntimeProperties.T, AbstractAssetTransfer::createNoParts);
-		registerNaturePartExpert(LicensePriming.T, AbstractAssetTransfer::createNoParts);
 		registerNaturePartExpert(RepositoryView.T, AbstractAssetTransfer::createNoParts);
 	}
 	

@@ -126,7 +126,6 @@ import com.braintribe.model.artifact.essential.PartIdentification;
 import com.braintribe.model.asset.PlatformAsset;
 import com.braintribe.model.asset.PlatformAssetDependency;
 import com.braintribe.model.asset.natures.AssetAggregator;
-import com.braintribe.model.asset.natures.LicensePriming;
 import com.braintribe.model.asset.natures.ManipulationPriming;
 import com.braintribe.model.asset.natures.MasterCartridge;
 import com.braintribe.model.asset.natures.PlatformAssetNature;
@@ -158,7 +157,6 @@ import com.braintribe.model.platform.setup.api.GetAssetDependencies;
 import com.braintribe.model.platform.setup.api.GetAssetsFromPackagedPlatformSetup;
 import com.braintribe.model.platform.setup.api.GetLockedVersions;
 import com.braintribe.model.platform.setup.api.IncrementRevisions;
-import com.braintribe.model.platform.setup.api.InstallLicense;
 import com.braintribe.model.platform.setup.api.LockVersions;
 import com.braintribe.model.platform.setup.api.PackagePlatformSetup;
 import com.braintribe.model.platform.setup.api.PackagePlatformSetupAsZip;
@@ -180,7 +178,6 @@ import com.braintribe.model.platformsetup.PlatformSetup;
 import com.braintribe.model.plugin.jdbc.JdbcPlugableDcsaSharedStorage;
 import com.braintribe.model.processing.core.expert.api.MutableDenotationMap;
 import com.braintribe.model.processing.core.expert.impl.PolymorphicDenotationMap;
-import com.braintribe.model.processing.license.glf.LicenseTools;
 import com.braintribe.model.processing.service.api.OutputConfig;
 import com.braintribe.model.processing.service.api.OutputConfigAspect;
 import com.braintribe.model.processing.service.api.ServiceRequestContext;
@@ -305,7 +302,6 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 		dispatching.register(CreateBackup.T,                         (c, r) -> createBackup(r));
 		dispatching.register(RestoreBackup.T,                        (c, r) -> restoreBackup(r));
 		dispatching.register(Encrypt.T,                              (c, r) -> encrypt(r));
-		dispatching.register(InstallLicense.T,                       (c, r) -> installLicense(c, r));
 		dispatching.register(GetAssetDependencies.T,                 (c, r) -> getAssetDependencies(r));
 		dispatching.register(SetupRepositoryConfiguration.T,         (c, r) -> setupRepositoryConfiguration(r));
 		dispatching.register(GetLockedVersions.T,                    (c, r) -> getLockedVersions(r));
@@ -948,41 +944,6 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 			contextDirFile.mkdirs();
 	}
 
-	private Neutral installLicense(ServiceRequestContext requestContext, InstallLicense request) {
-
-		Resource license = request.getFile();
-		//LicenseTools.validateLicense(license::openStream, license);
-		
-		PlatformAsset project = PlatformAsset.T.create();
-		project.setGroupId("tribefire.cortex.assets");
-		project.setName(TRIBEFIRE_LICENSE);
-		
-		project.setVersion(request.getVersion());
-		project.setResolvedRevision("1-pc");
-
-		project.setNature(LicensePriming.T.create());
-		project.setNatureDefinedAsPart(true); // TODO remove
-
-		// install asset to local repository to make it available
-		File baseFolder;
-		try {
-			baseFolder = Files.createTempDirectory("tmp-assets").toFile();
-		} catch (IOException e) {
-			throw new UncheckedIOException("Error while creating tmp directory for asset installation of project " + project.qualifiedRevisionedAssetName(), e);
-		}
-
-		String localRepoDir = localRepoDir(requestContext);
-
-		println("Installing license asset " + project.qualifiedRevisionedAssetName() + " to local repo " + localRepoDir);
-
-		MavenInstallAssetTransfer transfer = new MavenInstallAssetTransfer(project, requestContext, baseFolder, new File(localRepoDir), false);
-		transfer.addStaticPart(license::openStream, "license:glf");
-		transfer.transfer();
-
-
-		return Neutral.NEUTRAL;
-	}
-	
 	private String encrypt(Encrypt request) {
 		String algorithm = request.getAlgorithm();
 		String keyFactoryAlgorithm = request.getKeyFactoryAlgorithm();

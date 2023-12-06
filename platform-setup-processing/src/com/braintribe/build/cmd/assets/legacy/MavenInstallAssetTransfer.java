@@ -13,7 +13,6 @@ import java.util.Objects;
 import com.braintribe.model.asset.PlatformAsset;
 import com.braintribe.model.generic.eval.Evaluator;
 import com.braintribe.model.platform.setup.api.CreateProject;
-import com.braintribe.model.platform.setup.api.InstallLicense;
 import com.braintribe.model.platformsetup.api.request.TransferAsset;
 import com.braintribe.model.processing.accessrequest.api.AccessRequestContext;
 import com.braintribe.model.service.api.ServiceRequest;

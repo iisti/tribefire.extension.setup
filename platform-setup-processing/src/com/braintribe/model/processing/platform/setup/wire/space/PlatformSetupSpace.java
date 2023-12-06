@@ -17,7 +17,6 @@ import com.braintribe.build.cmd.assets.PlatformSetupProcessor;
 import com.braintribe.build.cmd.assets.impl.AssetAggregatorNatureBuilder;
 import com.braintribe.build.cmd.assets.impl.ContainerProjectionNatureBuilder;
 import com.braintribe.build.cmd.assets.impl.DisjointCollector;
-import com.braintribe.build.cmd.assets.impl.LicensePrimingNatureBuilder;
 import com.braintribe.build.cmd.assets.impl.ManipulationPrimingNatureBuilder;
 import com.braintribe.build.cmd.assets.impl.MarkdownDocumentationConfigNatureBuilder;
 import com.braintribe.build.cmd.assets.impl.MarkdownDocumentationNatureBuilder;
@@ -40,7 +39,6 @@ import com.braintribe.build.cmd.assets.impl.preprocessing.RedirectStoragePriming
 import com.braintribe.model.asset.natures.AssetAggregator;
 import com.braintribe.model.asset.natures.ContainerProjection;
 import com.braintribe.model.asset.natures.DynamicInitializerInput;
-import com.braintribe.model.asset.natures.LicensePriming;
 import com.braintribe.model.asset.natures.ManipulationPriming;
 import com.braintribe.model.asset.natures.MarkdownDocumentation;
 import com.braintribe.model.asset.natures.MarkdownDocumentationConfig;
@@ -78,7 +76,6 @@ public class PlatformSetupSpace implements WireSpace {
 		bean.setVirtualEnvironment(dependencyEnvironment.virtualEnvironment());
 		bean.registerExpert(ManipulationPriming.T, manipulationPrimingNatureBuilder());
 		bean.registerExpert(ResourcePriming.T, resourcePrimingNatureBuilder());
-		bean.registerExpert(LicensePriming.T, licensePrimingNatureBuilder());
 		bean.registerExpert(ModelPriming.T, modelPrimingNatureBuilder());
 		bean.registerExpert(PluginPriming.T, pluginPrimingNatureBuilder());
 		bean.registerExpert(Plugin.T, pluginNatureBuilder());
@@ -167,12 +164,6 @@ public class PlatformSetupSpace implements WireSpace {
 		return bean;
 	}
 	
-	@Managed
-	private LicensePrimingNatureBuilder licensePrimingNatureBuilder() {
-		LicensePrimingNatureBuilder bean = new LicensePrimingNatureBuilder();
-		return bean;
-	}
-
 	@Managed
 	private AssetAggregatorNatureBuilder assetAggregatorNatureBuilder() {
 		AssetAggregatorNatureBuilder bean = new AssetAggregatorNatureBuilder();

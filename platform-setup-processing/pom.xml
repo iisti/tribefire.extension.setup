@@ -215,11 +215,6 @@ You should have received a copy of the GNU Lesser General Public License along w
             <version>${V.tribefire.cortex}</version>
         </dependency>
         <dependency>
-            <groupId>tribefire.cortex</groupId>
-            <artifactId>license-system-glf</artifactId>
-            <version>${V.tribefire.cortex}</version>
-        </dependency>
-        <dependency>
             <groupId>net.lingala.zip4j</groupId>
             <artifactId>zip4j</artifactId>
             <version>2.5.0</version>
