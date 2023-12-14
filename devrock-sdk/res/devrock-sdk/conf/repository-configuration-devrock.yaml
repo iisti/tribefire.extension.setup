@@ -3,10 +3,8 @@
 
   repositories: [
     !com.braintribe.devrock.model.repository.MavenHttpRepository {
-      name: "core-dev", 
-      url: "https://maven.pkg.github.com/hiconic-os/maven-repo-dev", 
-      user: "${env.OPENTF_REPO_USER}",
-      password: "${env.OPENTF_REPO_PASSWORD}",
+      name: "hiconic-dev",
+      url: "https://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@maven.pkg.github.com/hiconic-os/maven-repo-dev",
       dominanceFilter: !com.braintribe.devrock.model.repository.filters.AllMatchingArtifactFilter {},
     },
     !com.braintribe.devrock.model.repository.MavenHttpRepository {
