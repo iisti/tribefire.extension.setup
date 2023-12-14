@@ -2,9 +2,9 @@
   cachePath: "${config.base}/../repo",
 
   repositories: [
-    !com.braintribe.devrock.model.repository.MavenHttpRepository {
-      name: "hiconic-dev",
-      url: "https://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@maven.pkg.github.com/hiconic-os/maven-repo-dev",
+    !com.braintribe.devrock.model.repository.IndexedMavenHttpRepository {
+      name: "hiconic-os-dev", 
+      url: "https://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@maven.pkg.github.com/hiconic-os/maven-repo-dev",
       dominanceFilter: !com.braintribe.devrock.model.repository.filters.AllMatchingArtifactFilter {},
     },
     !com.braintribe.devrock.model.repository.MavenHttpRepository {
