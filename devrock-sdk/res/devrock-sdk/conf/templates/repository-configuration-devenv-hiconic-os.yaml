@@ -1,8 +1,7 @@
 !com.braintribe.devrock.model.repository.RepositoryConfiguration {
 
-  cachePath: "${config.dir}/../../../repo",
+  cachePath: "${config.dir}/repo",
 
-  # the repo for local installation (e.g. via ant)
   installRepository: &install-repo !com.braintribe.devrock.model.repository.MavenFileSystemRepository {
     name: "install",
     rootPath: "${config.dir}/inst",
@@ -10,20 +9,19 @@
     cachable: false,
   },
 
-  # the list of repos for resolving  
+  uploadRepository: &hiconic-dev  !com.braintribe.devrock.model.repository.IndexedMavenHttpRepository {
+    name: "hiconic-dev",
+    url: "https://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@maven.pkg.github.com/hiconic-os/maven-repo-dev",
+    dominanceFilter: !com.braintribe.devrock.model.repository.filters.AllMatchingArtifactFilter {},
+  },
+
   repositories: [
     # the install-repo must be first to override other repos (combined with dominance filter)
     *install-repo,
+    *hiconic-dev,
     !com.braintribe.devrock.model.repository.MavenHttpRepository {
-      name: "third-party", 
-      url: "https://repo.modularmind.eu/artifactory/third-party/", 
-      user: "guest", password: "Guest2023.",
-      restSupport: none,
-    },
-    !com.braintribe.devrock.model.repository.MavenHttpRepository {
-      name: "core-dev", 
-      url: "https://repo.modularmind.eu/artifactory/core-dev/", 
-      restSupport: none,
+      name: "third-party",
+      url: "https://repo1.maven.org/maven2/",
     },
   ]
 }

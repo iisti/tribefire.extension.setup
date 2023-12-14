@@ -21,7 +21,7 @@
     *hiconic-dev,
     !com.braintribe.devrock.model.repository.MavenHttpRepository {
       name: "third-party", 
-      url: "https://repo1.maven.org/maven2/", 
+      url: "https://repo1.maven.org/maven2/",
     },
   ]
 }

@@ -3,22 +3,15 @@
 
   repositories: [
     !com.braintribe.devrock.model.repository.MavenHttpRepository {
-      name: "devrock", 
-      url: "https://artifactory.braintribe.com/artifactory/devrock/", 
+      name: "core-dev", 
+      url: "https://maven.pkg.github.com/hiconic-os/maven-repo-dev", 
       user: "${env.OPENTF_REPO_USER}",
       password: "${env.OPENTF_REPO_PASSWORD}",
+      dominanceFilter: !com.braintribe.devrock.model.repository.filters.AllMatchingArtifactFilter {},
     },
     !com.braintribe.devrock.model.repository.MavenHttpRepository {
       name: "third-party", 
-      url: "https://artifactory.braintribe.com/artifactory/third-party/", 
-      user: "${env.OPENTF_REPO_USER}",
-      password: "${env.OPENTF_REPO_PASSWORD}",
-    },
-    !com.braintribe.devrock.model.repository.MavenHttpRepository {
-      name: "core-dev", 
-      url: "https://artifactory.braintribe.com/artifactory/core-dev/", 
-      user: "${env.OPENTF_REPO_USER}",
-      password: "${env.OPENTF_REPO_PASSWORD}",
+      url: "https://repo1.maven.org/maven2/", 
     },
   ]
 }
