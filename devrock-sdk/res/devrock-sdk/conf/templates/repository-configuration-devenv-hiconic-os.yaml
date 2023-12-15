@@ -11,7 +11,7 @@
 
   uploadRepository: &hiconic-dev  !com.braintribe.devrock.model.repository.IndexedMavenHttpRepository {
     name: "hiconic-dev",
-    url: "https://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@maven.pkg.github.com/hiconic-os/maven-repo-dev",
+    url: "https://${env.GITHUB_READ_PACKAGES_TOKEN}@maven.pkg.github.com/hiconic-os/maven-repo-dev",
     dominanceFilter: !com.braintribe.devrock.model.repository.filters.AllMatchingArtifactFilter {},
   },
 
