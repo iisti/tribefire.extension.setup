@@ -4,7 +4,9 @@
   repositories: [
     !com.braintribe.devrock.model.repository.IndexedMavenHttpRepository {
       name: "hiconic-os-dev",
-      url: "https://${env.GITHUB_READ_PACKAGES_TOKEN}@maven.pkg.github.com/hiconic-os/maven-repo-dev",
+      url: "https://maven.pkg.github.com/hiconic-os/maven-repo-dev",
+      user: "ignored",
+      password: "${env.GITHUB_READ_PACKAGES_TOKEN}",
       dominanceFilter: !com.braintribe.devrock.model.repository.filters.AllMatchingArtifactFilter {},
     },
     !com.braintribe.devrock.model.repository.MavenHttpRepository {
