@@ -1,0 +1,11 @@
+name: Build Devrock SDK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run:
+    uses: hiconic-os/hiconic.ci.workflows/.github/workflows/range.yaml@main
+    secrets: inherit
+    with:
+      range: "[jinni]+[devrock-sdk]"
