@@ -34,7 +34,7 @@ public interface CreateTfServicesDebugProject extends ArtifactTemplateRequest {
 
 	@Override
 	default String template() {
-		return "tribefire.cortex.assets.templates:tf-services-debug-project-template#1.0";
+		return "tribefire.cortex.assets.templates:tf-services-debug-project-template#2.0";
 	}
 
 }
