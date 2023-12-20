@@ -32,7 +32,7 @@
 			<div id=entrypoints class='center-content'>				
 				<#list documentation.entrypoints as entrypoint>
 				<#assign e=entrypoint.displayInfo >
-				 <a href="${entrypoint.targetUrl}" class='entrypoint card'>
+				 <a href="${entrypoint.targetUrl()}" class='entrypoint card'>
 					 <span class='asset-name'>${e.displayTitle}</span>
 					 <div class='entrypoint-image'>
 					 	<#if e.imageUrl??>

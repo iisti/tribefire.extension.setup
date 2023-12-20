@@ -21,20 +21,29 @@ import com.braintribe.model.generic.reflection.EntityTypes;
  * @author pit
  *
  */
-public interface Entrypoint extends GenericEntity{
+public interface Entrypoint extends GenericEntity {
 	EntityType<Entrypoint> T = EntityTypes.T(Entrypoint.class);
 
 	/**
-	 * @return - a {@link String} identifying the asset (how? <groupdId>:<artifactId>})
+	 * @return assetId in the format {@code $groupId:$artifactId}
 	 */
 	@Mandatory
 	String getAssetId();
 	void setAssetId(String assetId);
-	
+
 	/**
-	 * @return - the {@link CustomAssetMetaData} of the asset behind the entry point
+	 * @return the {@link CustomAssetMetaData} of the asset behind the entry point
 	 */
 	CustomAssetMetaData getDisplayInfo();
 	void setDisplayInfo(CustomAssetMetaData assetConfig);
-	
+
+	/**
+	 * @return - a derived relative path the translated data of the asset
+	 */
+	default String targetUrl() {
+		String assetPath = getAssetId().replace(":", "/");
+		// NOTE the displayInfo is set if not configured, thus this doesn't throw NPE even if the prop is not mandatory
+		return assetPath + "/" + getDisplayInfo().getStartingPoint().replaceAll("\\.md$", ".html");
+	}
+
 }
