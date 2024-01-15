@@ -23,7 +23,7 @@ if exist build.gradle (
     )
 
     REM call gradle with transformed arguments
-    CALL "%GRADLE_HOME%\bin\gradle.bat" %GRADLE_DEBUG_OPTS% %TRANSFORMED_ARGS%
+    CALL "%GRADLE_HOME%\bin\gradle.bat" %GRADLE_DEBUG_OPTS% !TRANSFORMED_ARGS!
 ) else (
     if exist build.xml (
         echo CALL "%ANT_HOME%\bin\ant.bat" -lib "%ANT_LIB_DIR%" %*
