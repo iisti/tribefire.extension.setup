@@ -1,5 +1,4 @@
-# a concrete template for eclipse-workspaces with basic configuration
+# template for Eclipse workspaces with basic configuration
 eclipseWorkspaceTemplate: "${config.sdk.conf}/templates/eclipse-workspace"
-# the template for repository-configuration used for a new dev-env
-# repoConfTemplate: "${config.sdk.conf}/templates/repository-configuration-devenv-bt.yaml"
+# template for repository-configuration of a new dev-env
 repoConfTemplate: "${config.sdk.conf}/templates/repository-configuration-devenv-hiconic-os.yaml"
