@@ -26,12 +26,12 @@ You should have received a copy of the GNU Lesser General Public License along w
         <V.com.braintribe.devrock.templates>[2.0,2.1)</V.com.braintribe.devrock.templates>
         <V.com.braintribe.devrock.ant>[1.0,1.1)</V.com.braintribe.devrock.ant>
         <V.com.braintribe.gm>[2.0,2.1)</V.com.braintribe.gm>
-        <V.tribefire.extension.schemed-xml>[2.0,2.1)</V.tribefire.extension.schemed-xml>
         <V.com.braintribe.logging>[2.0,2.1)</V.com.braintribe.logging>
         <V.com.braintribe.wire>[2.0,2.1)</V.com.braintribe.wire>
         <V.tribefire.cortex>[3.0,3.1)</V.tribefire.cortex>
         <V.tribefire.cortex.assets>[3.0,3.1)</V.tribefire.cortex.assets>
         <V.tribefire.cortex.assets.templates>[2.0,2.1)</V.tribefire.cortex.assets.templates>
+        <V.hiconic.platform.reflex>[1.0,1.1)</V.hiconic.platform.reflex>
         <!-- extensions -->
         <V.tribefire.extension.artifact>[2.0,2.1)</V.tribefire.extension.artifact>
         <V.tribefire.extension.xmi>[2.0,2.1)</V.tribefire.extension.xmi>
@@ -39,6 +39,7 @@ You should have received a copy of the GNU Lesser General Public License along w
         <V.tribefire.extension.hikari>[1.0,1.1)</V.tribefire.extension.hikari>
         <V.tribefire.extension.hydrux>[2.1,2.2)</V.tribefire.extension.hydrux>
         <V.tribefire.extension.vitals.jdbc>[3.0,3.1)</V.tribefire.extension.vitals.jdbc>
+        <V.tribefire.extension.schemed-xml>[2.0,2.1)</V.tribefire.extension.schemed-xml>
         <V.tribefire.extension.scripting>[1.0,1.1)</V.tribefire.extension.scripting>
         <!-- externals -->
         <V.org.apache.velocity>2.1</V.org.apache.velocity>
