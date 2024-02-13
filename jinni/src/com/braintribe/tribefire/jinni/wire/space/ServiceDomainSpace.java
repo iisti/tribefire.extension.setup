@@ -25,6 +25,9 @@ import com.braintribe.tribefire.jinni.wire.contract.ServiceDomainContract;
 import com.braintribe.wire.api.annotation.Managed;
 import com.braintribe.wire.api.util.Lists;
 
+import hiconic.platform.reflex._ReflexSetupApiModel_;
+import tribefire.extension.hydrux._HydruxSetupApiModel_;
+import tribefire.extension.js._JsSetupApiModel_;
 import tribefire.extension.setup._DevEnvGeneratorConfigModel_;
 import tribefire.extension.setup._JinniConfigModel_;
 
@@ -55,8 +58,9 @@ public class ServiceDomainSpace implements ServiceDomainContract {
 				getClassPathModel("tribefire.cortex.assets.templates:platform-asset-template-service-model"), //
 				getClassPathModel("tribefire.extension.schemed-xml:schemed-xml-xsd-api-model"), // TODO how did this ever work?!
 				getClassPathModel("tribefire.extension.xmi:argo-exchange-api-model"), //
-				getClassPathModel("tribefire.extension.js:js-setup-api-model"), //
-				getClassPathModel("tribefire.extension.hydrux:hydrux-setup-api-model"), //
+				getClassPathModel(_ReflexSetupApiModel_.reflection), //
+				getClassPathModel(_JsSetupApiModel_.reflection), //
+				getClassPathModel(_HydruxSetupApiModel_.reflection), //
 				getClassPathModel("tribefire.extension.hikari:hikari-deployment-model"), // Because HikariCpConnectionPool can be attached to requests
 				getClassPathModel("tribefire.extension.artifact:artifact-management-api-model") //
 		);

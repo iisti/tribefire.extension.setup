@@ -173,6 +173,12 @@ You should have received a copy of the GNU Lesser General Public License along w
             <artifactId>js-setup-processing</artifactId>
             <version>${V.tribefire.extension.js}</version>
         </dependency>
+        <!-- Reflex -->
+        <dependency>
+            <groupId>hiconic.platform.reflex</groupId>
+            <artifactId>reflex-setup-api-model</artifactId>
+            <version>${V.hiconic.platform.reflex}</version>
+        </dependency>
         <!-- Hydrux -->
         <dependency>
             <groupId>tribefire.extension.hydrux</groupId>
