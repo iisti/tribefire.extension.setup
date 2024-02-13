@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
     </parent>
     <artifactId>devrock-sdk</artifactId>
     <version>2.1.137</version>
+    <packaging>zip</packaging>
     <licenses>
         <license>
             <name>GNU Lesser General Public License v3.0</name>
