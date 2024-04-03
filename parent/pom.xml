@@ -25,6 +25,7 @@ You should have received a copy of the GNU Lesser General Public License along w
         <V.com.braintribe.devrock>[2.0,2.1)</V.com.braintribe.devrock>
         <V.com.braintribe.devrock.templates>[2.0,2.1)</V.com.braintribe.devrock.templates>
         <V.com.braintribe.devrock.ant>[1.0,1.1)</V.com.braintribe.devrock.ant>
+        <V.com.braintribe.devrock.cicd>[1.0,1.1)</V.com.braintribe.devrock.cicd>
         <V.com.braintribe.gm>[2.0,2.1)</V.com.braintribe.gm>
         <V.com.braintribe.logging>[2.0,2.1)</V.com.braintribe.logging>
         <V.com.braintribe.wire>[2.0,2.1)</V.com.braintribe.wire>
