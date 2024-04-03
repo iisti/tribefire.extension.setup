@@ -56,7 +56,7 @@ public class RestoreArtifactsProcessor {
 				.collect(Collectors.toSet());
 
 		RepositoryConfiguration repositoryConfiguration = RepositoryConfiguration.T.create();
-		repositoryConfiguration.setLocalRepositoryPath(restoreArtifacts.getFolder());
+		repositoryConfiguration.setCachePath(restoreArtifacts.getFolder());
 		for (String repositoryName : repositories) {
 			MavenHttpRepository repository = MavenHttpRepository.T.create();
 			repository.setUser(restoreArtifacts.getUser());
@@ -112,7 +112,6 @@ public class RestoreArtifactsProcessor {
 				}
 			}
 		}
-
 	}
 
 	private static Map<String, Artifact> createArtifactWithPartsPerRepo(TransferredArtifact transferredArtifact, String repoBasePath) {

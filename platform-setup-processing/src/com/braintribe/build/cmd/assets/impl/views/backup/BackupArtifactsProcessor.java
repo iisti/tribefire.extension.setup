@@ -135,11 +135,15 @@ public class BackupArtifactsProcessor {
 				}
 			}
 		}
+		
+		String targetPath = repositoryConfiguration.getCachePath() != null ? repositoryConfiguration.getCachePath()
+				: repositoryConfiguration.getLocalRepositoryPath();
+
 		if (generateMavenMetadata) {
-			generateMavenMetadata(artifactsToDownload, repositoryConfiguration.getLocalRepositoryPath());
+			generateMavenMetadata(artifactsToDownload, targetPath);
 		}
 		report.sort();
-		RepositoryViewHelpers.writeYamlFile(report, new File(repositoryConfiguration.getLocalRepositoryPath(), BACKUP_REPORT));
+		RepositoryViewHelpers.writeYamlFile(report, new File(targetPath, BACKUP_REPORT));
 		return report;
 	}
 
