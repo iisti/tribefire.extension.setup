@@ -13,7 +13,6 @@ package com.braintribe.model.platform.setup.api;
 
 import java.util.Map;
 
-import com.braintribe.model.generic.annotation.Initializer;
 import com.braintribe.model.generic.annotation.meta.Description;
 import com.braintribe.model.generic.annotation.meta.Mandatory;
 import com.braintribe.model.generic.eval.EvalContext;
@@ -30,9 +29,9 @@ import com.braintribe.model.service.api.result.Neutral;
 public interface RestoreArtifacts extends SetupRequest {
 
 	String folder = "folder";
-	String artifactoryUrl = "artifactoryUrl";
 	String user = "user";
 	String password = "password";
+	String url = "url";
 	String changedRepositoryIds = "changedRepositoryIds";
 
 	EntityType<RestoreArtifacts> T = EntityTypes.T(RestoreArtifacts.class);
