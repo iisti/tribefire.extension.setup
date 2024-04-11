@@ -11,8 +11,8 @@ DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 
 HC_BUILD=${DIR}/hc-build
 
-if [ -e build.xml ]; then
-    "${HC_BUILD}" run-ant "$@"
-else
+if [ -e parent/pom.xml ]; then
     "${HC_BUILD}" build "$@"
+else
+    "${HC_BUILD}" run-ant "$@"
 fi
