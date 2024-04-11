@@ -159,7 +159,7 @@ public class BuildDockerImagesProcessor {
 	// switch to JDK 22 (older versions of tribefire may also work with this JDK, but they haven't been tested with it)
 	// (tribefire-2-3-13 uses OpenJDK 22 in Docker images)
 	@SuppressWarnings("unused") // no version specific processor code required
-	private static final String DOCKER_RESOURCES_VERSION__2_0_270 = "2.0.270";
+	private static final String DOCKER_RESOURCES_VERSION__2_0_271 = "2.0.271";
 
 	private static final Logger logger = Logger.getLogger(BuildDockerImagesProcessor.class);
 
