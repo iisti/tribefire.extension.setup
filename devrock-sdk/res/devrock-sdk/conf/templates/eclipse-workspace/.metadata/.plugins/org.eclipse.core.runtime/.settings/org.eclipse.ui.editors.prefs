@@ -1,0 +1,4 @@
+additionIndicationColor=0,255,0
+changeIndicationColor=0,0,255
+eclipse.preferences.version=1
+quickdiff.defaultProvider=org.eclipse.egit.ui.internal.decorators.GitQuickDiffProvider
