@@ -15,6 +15,7 @@ import static com.braintribe.console.ConsoleOutputs.println;
 import static com.braintribe.console.ConsoleOutputs.red;
 import static com.braintribe.console.ConsoleOutputs.white;
 import static com.braintribe.console.output.ConsoleOutputFiles.outputProjectionDirectoryTree;
+import static java.util.Collections.emptyMap;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,18 +25,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.braintribe.cfg.Configurable;
 import com.braintribe.cfg.Required;
 import com.braintribe.gm.model.reason.Maybe;
 import com.braintribe.gm.model.reason.Reasons;
 import com.braintribe.gm.model.reason.essential.AlreadyExists;
-import com.braintribe.gm.model.reason.essential.Canceled;
 import com.braintribe.gm.model.reason.essential.InvalidArgument;
 import com.braintribe.gm.model.reason.essential.IoError;
-import com.braintribe.logging.Logger;
 import com.braintribe.model.processing.service.api.OutputConfig;
 import com.braintribe.model.processing.service.api.OutputConfigAspect;
 import com.braintribe.model.processing.service.api.ReasonedServiceProcessor;
@@ -43,167 +42,151 @@ import com.braintribe.model.processing.service.api.ServiceRequestContext;
 import com.braintribe.model.service.api.result.Neutral;
 import com.braintribe.utils.FileTools;
 
-import tribefire.extension.setup.dev_env_generator.processing.eclipse.EclipseWorkspaceJdtUiPrefs;
-import tribefire.extension.setup.dev_env_generator.processing.eclipse.EclipseWorkspaceNetJdtCorePrefs;
+import tribefire.extension.setup.dev_env_generator.processing.eclipse.EclipseWorkspaceHelper;
 import tribefire.extension.setup.dev_env_generator.processing.eclipse.EclipseWorkspaceOrgJdtCorePrefs;
+import tribefire.extension.setup.dev_env_generator.processing.eclipse.EclipseWorkspaceOrgJdtUiPrefs;
+import tribefire.extension.setup.dev_env_generator.processing.eclipse.EclipseWorkspaceOrgUiIdePrefs;
 import tribefire.extension.setup.dev_env_generator.processing.eclipse.EclipseWorkspaceTomcatPrefs;
-import tribefire.extension.setup.dev_env_generator.processing.eclipse.EclipseWorkspaceUiCorePrefs;
 import tribefire.extension.setup.dev_env_generator_api.model.CreateDevEnv;
 import tribefire.extension.setup.dev_env_generator_config.model.DevEnvGeneratorConfig;
 
 /**
- * This {@link DevEnvGenerator processor} serves as an artifact template engine.
+ * Processor for {@link CreateDevEnv}.
  */
 public class DevEnvGenerator implements ReasonedServiceProcessor<CreateDevEnv, Neutral> {
 
-	private final Logger logger = Logger.getLogger(DevEnvGenerator.class);
-	private boolean verbose = false;
+	private final Maybe<Neutral> OK = Maybe.complete(Neutral.NEUTRAL);
+
 	private DevEnvGeneratorConfig config;
 
+	private boolean verbose;
+
 	@Required
-	@Configurable
 	public void setConfiguration(DevEnvGeneratorConfig config) {
 		this.config = config;
 	}
 
 	@Override
 	public Maybe<Neutral> processReasoned(ServiceRequestContext requestContext, CreateDevEnv request) {
-
 		verbose = requestContext.getAspect(OutputConfigAspect.class, OutputConfig.empty).verbose();
-
 		if (verbose) {
 			println("DevEnvGeneratorConfig read from dev-env-generator-config.yaml:");
-			println("  - eclipse workspace template: \"" + config.getEclipseWorkspaceTemplate() + "\"");
-			println("  - repository-config template: \"" + config.getRepoConfTemplate() + "\"");
+			println("  - eclipse workspace template: " + config.getEclipseWorkspaceTemplate());
+			println("  - repository-config template: " + config.getRepoConfTemplate());
 		}
 
 		String name = request.getName();
 		File devEnv = new File(name);
 
-		return createDirectories(devEnv) //
+		return OK
+				.flatMap(r -> createDirectories(devEnv)) //
 				.flatMap(r -> createDevEnv(devEnv)) //
 				.flatMap(r -> createCommands(devEnv)) //
 				.flatMap(r -> copyEclipseWorkspace(devEnv)) //
 				.flatMap(r -> patchEclipseWorkspace(devEnv)) //
 				.flatMap(r -> copyRepositoryConfiguration(devEnv)) //
-				.flatMap(r -> output(devEnv, verbose));
-
+				.flatMap(r -> output(devEnv));
 	}
 
 	private Maybe<Neutral> copyEclipseWorkspace(File devEnv) {
 		String template = config.getEclipseWorkspaceTemplate();
-		if (template != null) {
-			File wspc = new File(template);
-			if (wspc.exists()) {
-				FileTools.copy(wspc) //
-						.as(new File(devEnv + "/eclipse-workspace")) //
-						.please();
-			} else {
-				return Reasons.build(InvalidArgument.T).text("The eclipseWorkspaceTemplate at \"" + template + "\" not found.").toMaybe();
-			}
-		} else {
+		if (template == null) {
 			println(red("No \"eclipseWorkspaceTemplate\" configured in \"dev-env-generator-config.yaml\". Only minimal workspace created. "));
+			return OK;
 		}
 
-		return Maybe.complete(Neutral.NEUTRAL);
+		File wspc = new File(template);
+		if (!wspc.exists())
+			return Reasons.build(InvalidArgument.T) //
+					.text("The eclipseWorkspaceTemplate at \"" + template + "\" not found.") //
+					.toMaybe();
+
+		FileTools.copy(wspc) //
+				.as(new File(devEnv + "/eclipse-workspace")) //
+				.please();
+
+		return OK;
 	}
 
 	private Maybe<Neutral> patchEclipseWorkspace(File devEnv) {
-		if (!devEnv.isDirectory()) {
-			return Reasons.build(Canceled.T).text("Error while creating dev-env. Directory \"" + devEnv + "\" not created.").toMaybe();
-		}
 		File cfgdir = new File(devEnv, "eclipse-workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings");
-		if (!cfgdir.exists()) {
-			if (verbose)
-				println("WARNING: Need to re-create eclipse workspace.");
+		if (!cfgdir.exists())
 			cfgdir.mkdirs();
-		}
 
-		String DEVENV = espaceWindowsPathForEclipse(devEnv.getAbsolutePath());
+		String DEV_ENV_HOME = espaceWindowsPathForEclipse(devEnv.getAbsolutePath());
 
-		String TOMCAT_HOME = DEVENV + "/tf-setups/main/runtime/host";
+		String HICONIC_SDK_HOME = espaceWindowsPathForEclipse(resolveHiconicSdkHome());
+		String TOMCAT_HOME = DEV_ENV_HOME + "/tf-setups/main/runtime/host";
 
-		EclipseWorkspaceNetJdtCorePrefs netJdt = new EclipseWorkspaceNetJdtCorePrefs(devEnv);
-		if (verbose)
-			println("cfg file: " + netJdt.getCfgFile() + " exists: " + netJdt.exists());
-		if (netJdt.exists()) {
-			Maybe<Neutral> content = netJdt.patch(//
-					"org.eclipse.jdt.core.classpathVariable.TOMCAT_HOME=" + TOMCAT_HOME, //
-					Map.ofEntries(Map.entry("(?mi).*\\.tomcat_home=.*", ""))); // remove line
-			if (!content.isSatisfied())
-				return content.whyUnsatisfied();
+		EclipseWorkspaceOrgJdtCorePrefs jdtCore = new EclipseWorkspaceOrgJdtCorePrefs(devEnv);
+		printFileInfo(jdtCore);
+		if (jdtCore.exists()) {
+			jdtCore.patch(//
+					"org.eclipse.jdt.core.classpathVariable.HICONIC_SDK_HOME=" + HICONIC_SDK_HOME + "\n" + //
+							"org.eclipse.jdt.core.classpathVariable.DEV_ENV_HOME=" + DEV_ENV_HOME + "\n" + //
+							"org.eclipse.jdt.core.classpathVariable.TOMCAT_HOME=" + TOMCAT_HOME, //
+
+					Map.of( //
+							"(?mi).*\\.hiconic_sdk_home=.*", "", //
+							"(?mi).*\\.dev_env_home=.*", "", //
+							"(?mi).*\\.tomcat_home=.*", "")
+					); // remove line
+
 		} else {
 			// create it
-			Maybe<Neutral> result = netJdt.create(Map.ofEntries(Map.entry("@TOMCAT_HOME@", TOMCAT_HOME)));
-			if (!result.isSatisfied())
-				return result.whyUnsatisfied();
+			jdtCore.create(Map.of(//
+					"@HICONIC_SDK_HOME@", HICONIC_SDK_HOME, //
+					"@DEV_ENV_HOME@", DEV_ENV_HOME, //
+					"@TOMCAT_HOME@", TOMCAT_HOME //
+			));
 		}
 
-		EclipseWorkspaceOrgJdtCorePrefs orgJdt = new EclipseWorkspaceOrgJdtCorePrefs(devEnv);
-		if (verbose)
-			println("cfg file: " + orgJdt.getCfgFile() + " exists: " + orgJdt.exists());
-		if (orgJdt.exists()) {
-			Maybe<Neutral> content = orgJdt.patch(//
-					"org.eclipse.jdt.core.classpathVariable.TOMCAT_HOME=" + TOMCAT_HOME, //
-					Map.ofEntries(Map.entry("(?mi).*\\.tomcat_home=.*", ""))); // remove line
-			if (!content.isSatisfied())
-				return content.whyUnsatisfied();
-		} else {
-			// create it
-			Maybe<Neutral> result = orgJdt.create(Map.ofEntries(Map.entry("@TOMCAT_HOME@", TOMCAT_HOME)));
-			if (!result.isSatisfied())
-				return result.whyUnsatisfied();
-		}
-
-		EclipseWorkspaceJdtUiPrefs jdtUi = new EclipseWorkspaceJdtUiPrefs(devEnv);
-		if (verbose)
-			println("cfg file: " + jdtUi.getCfgFile() + " exists: " + jdtUi.exists());
-		if (!jdtUi.exists()) {
-			// create it
-			Maybe<Neutral> result = jdtUi.create(Map.ofEntries(Map.entry("@DEVENV@", DEVENV)));
-			if (!result.isSatisfied())
-				return result.whyUnsatisfied();
-		}
+		EclipseWorkspaceOrgJdtUiPrefs jdtUi = new EclipseWorkspaceOrgJdtUiPrefs(devEnv);
+		printFileInfo(jdtUi);
+		if (!jdtUi.exists())
+			jdtUi.create(emptyMap());
 
 		EclipseWorkspaceTomcatPrefs tomcat = new EclipseWorkspaceTomcatPrefs(devEnv);
-		if (verbose)
-			println("cfg file: " + tomcat.getCfgFile() + " exists: " + tomcat.exists());
-		if (tomcat.exists()) {
+		printFileInfo(tomcat);
+		if (tomcat.exists())
 			// patch existing
-			Maybe<Neutral> result = tomcat.patch( //
-					"contextsDir=" + DEVENV + "/tf-setups/main/runtime/host/conf/Catalina/localhost\n" + //
-							"tomcatConfigFile=" + DEVENV + "/tf-setups/main/runtime/host/conf/server.xml\n" + //
-							"tomcatDir=" + DEVENV + "/tf-setups/main/runtime/host\n",
-					Map.ofEntries(//
-							Map.entry("(?mi)^\s*contextsDir=.*", ""), // remove line
-							Map.entry("(?mi)^\s*tomcatConfigFile=.*", ""), // remove line
-							Map.entry("(?mi)^\s*tomcatDir=.*", ""))); // remove line
-			if (!result.isSatisfied())
-				return result.whyUnsatisfied();
-		} else {
-			// create it
-			Maybe<Neutral> result = tomcat.create(Map.ofEntries(Map.entry("@DEVENV@", DEVENV)));
-			if (!result.isSatisfied())
-				return result.whyUnsatisfied();
-		}
+			tomcat.patch( //
+					"contextsDir=" + TOMCAT_HOME + "/conf/Catalina/localhost\n" + //
+							"tomcatConfigFile=" + TOMCAT_HOME + "/conf/server.xml\n" + //
+							"tomcatDir=" + TOMCAT_HOME + "\n",
+					Map.of(//
+							"(?mi)^\s*contextsDir=.*", "", // remove line
+							"(?mi)^\s*tomcatConfigFile=.*", "", // remove line
+							"(?mi)^\s*tomcatDir=.*", "")); // remove line
 
-		EclipseWorkspaceUiCorePrefs ui = new EclipseWorkspaceUiCorePrefs(devEnv);
+		else 
+			tomcat.create(Map.of("@TOMCAT_HOME@", TOMCAT_HOME));
+
+		EclipseWorkspaceOrgUiIdePrefs ui = new EclipseWorkspaceOrgUiIdePrefs(devEnv);
+		printFileInfo(ui);
+		if (ui.exists())
+			ui.patch("WORKSPACE_NAME=" + devEnv, Map.of("(?mi)^\s*workspace_name=.*", ""));
+		 else 
+			ui.create(Map.of("@THENAME@", devEnv.toString()));
+
+		return OK;
+	}
+
+	private void printFileInfo(EclipseWorkspaceHelper wsHelper) {
 		if (verbose)
-			println("cfg file: " + ui.getCfgFile() + " exists: " + ui.exists());
-		if (ui.exists()) {
-			Maybe<Neutral> content = ui.patch(//
-					"WORKSPACE_NAME=" + devEnv, //
-					Map.ofEntries(Map.entry("(?mi)^\s*workspace_name=.*", ""))); // remove line
-			if (!content.isSatisfied())
-				return content.whyUnsatisfied();
-		} else {
-			// create it
-			Maybe<Neutral> result = ui.create(Map.ofEntries(Map.entry("@THENAME@", devEnv.toString())));
-			if (!result.isSatisfied())
-				return result.whyUnsatisfied();
-		}
+			println("cfg file: " + wsHelper.getCfgFile() + " exists: " + wsHelper.exists());
+	}
 
-		return Maybe.complete(Neutral.NEUTRAL);
+	private String resolveHiconicSdkHome() {
+		String result = System.getenv("HICONIC_SDK_HOME");
+		if (result != null)
+			return result;
+
+		result = System.getenv("DEVROCK_SDK_HOME");
+		if (result != null)
+			return result;
+
+		return "HICONIC_SDK_HOME_IS_UNKNOWN";
 	}
 
 	private String espaceWindowsPathForEclipse(String path) {
@@ -212,27 +195,33 @@ public class DevEnvGenerator implements ReasonedServiceProcessor<CreateDevEnv, N
 
 	private Maybe<Neutral> copyRepositoryConfiguration(File devEnv) {
 		String template = config.getRepoConfTemplate();
-		Path target = Paths.get(devEnv.toString(), "/artifacts/repository-configuration.yaml");
-		if (template != null) {
-			File cfg = new File(template);
-			if (cfg.exists()) {
-				if (!cfg.isFile())
-					return Reasons.build(InvalidArgument.T)
-							.text("The repository configuration can only be a yaml file, but \"" + template + "\" was given.").toMaybe();
-				try {
-					Files.copy(cfg.toPath(), target);
-					return Maybe.complete(Neutral.NEUTRAL);
-				} catch (IOException e) {
-					return Reasons.build(IoError.T).text("Error while copying repository configuration: \"" + template + "\" was given.") //
-							.toMaybe();
-				}
-			} else {
-				return Reasons.build(InvalidArgument.T).text("The repository configuration \"" + template + "\" not found.").toMaybe();
-			}
+		if (template == null)
+			return Reasons.build(InvalidArgument.T) //
+					.text("No \"repoConfTemplate\" configured in \"dev-env-generator-config.yaml\". Requires fix.")
+					.toMaybe();
+
+		File cfg = new File(template);
+		if (!cfg.exists()) 
+			return Reasons.build(InvalidArgument.T) //
+					.text("The repository configuration \"" + template + "\" not found.") //
+					.toMaybe();
+		
+		if (!cfg.isFile())
+			return Reasons.build(InvalidArgument.T) //
+					.text("The repository configuration can only be a yaml file, but \"" + template + "\" was given.") //
+					.toMaybe();
+
+		try {
+			Path target = Paths.get(devEnv.toString(), "/artifacts/repository-configuration.yaml");
+			Files.copy(cfg.toPath(), target);
+
+		} catch (IOException e) {
+			return Reasons.build(IoError.T) //
+					.text("Error while copying repository configuration: \"" + template + "\" was given.") //
+					.toMaybe();
 		}
 
-		return Reasons.build(InvalidArgument.T).text("No \"repoConfTemplate\" configured in \"dev-env-generator-config.yaml\". Requires fix.")
-				.toMaybe();
+		return OK;
 	}
 
 	private Maybe<Neutral> createCommands(File devEnv) {
@@ -245,10 +234,11 @@ public class DevEnvGenerator implements ReasonedServiceProcessor<CreateDevEnv, N
 			writer.close();
 
 		} catch (IOException e) {
-			return Reasons.build(IoError.T).text("Error while creating dev-environment: \"" + fileName + "\".") //
+			return Reasons.build(IoError.T) //
+					.text("Error while creating dev-environment: \"" + fileName + "\".") //
 					.toMaybe();
 		}
-		return Maybe.complete(Neutral.NEUTRAL);
+		return OK;
 	}
 
 	private Maybe<Neutral> createDevEnv(File devEnv) {
@@ -259,39 +249,40 @@ public class DevEnvGenerator implements ReasonedServiceProcessor<CreateDevEnv, N
 			return Reasons.build(IoError.T).text("Error while creating dev-environment: \"" + path + "\".") //
 					.toMaybe();
 		}
-		return Maybe.complete(Neutral.NEUTRAL);
+		return OK;
 	}
 
 	private Maybe<Neutral> createDirectories(File devEnv) {
-		List<File> dirs = new ArrayList<>();
-		dirs.add(devEnv);
-		dirs.add(new File(devEnv, "artifacts"));
-		dirs.add(new File(devEnv, "artifacts/inst"));
-		dirs.add(new File(devEnv, "git"));
-		dirs.add(new File(devEnv, "commands"));
-		dirs.add(new File(devEnv, "eclipse-workspace"));
-		dirs.add(new File(devEnv, "tf-setups"));
-		dirs.add(new File(devEnv, "tf-setups/main"));
+		List<File> dirs = Arrays.asList( //
+				devEnv, //
+				new File(devEnv, "artifacts"), //
+				new File(devEnv, "artifacts/inst"), //
+				new File(devEnv, "git"), //
+				new File(devEnv, "commands"), //
+				new File(devEnv, "eclipse-workspace"), //
+				new File(devEnv, "tf-setups"), //
+				new File(devEnv, "tf-setups/main") //
+		);
 
 		// first check
 		for (File dir : dirs) {
 			if (dir.exists()) {
-				return Reasons.build(AlreadyExists.T).text("dev-env \"" + devEnv + "\", dir \"" + dir + "\" already exists.").toMaybe();
+				return Reasons.build(AlreadyExists.T).text("dev-env '" + devEnv + "', dir '" + dir + "' already exists.").toMaybe();
 			}
 		}
 		// then create
 		for (File dir : dirs)
 			dir.mkdirs();
 
-		return Maybe.complete(Neutral.NEUTRAL);
+		return OK;
 	}
 
-	public Maybe<Neutral> output(File devEnv, boolean verboseOutput) {
+	private Maybe<Neutral> output(File devEnv) {
 		println(white("Installing:"));
 		List<Path> foldPaths = new ArrayList<>();
-		if (!verboseOutput)
+		if (!verbose)
 			foldPaths.add(Paths.get(devEnv.toString(), "eclipse-workspace"));
 		outputProjectionDirectoryTree(devEnv.toPath(), foldPaths);
-		return Maybe.complete(Neutral.NEUTRAL);
+		return OK;
 	}
 }

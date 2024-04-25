@@ -28,7 +28,6 @@ public class DevEnvGeneratorSpace implements DevEnvGeneratorContract {
 	@Managed
 	@Override
 	public DevEnvGenerator devEnvGenerator() {
-
 		DevEnvGenerator bean = new DevEnvGenerator();
 		bean.setConfiguration(modeledConfiguration.config(DevEnvGeneratorConfig.T));
 		return bean;

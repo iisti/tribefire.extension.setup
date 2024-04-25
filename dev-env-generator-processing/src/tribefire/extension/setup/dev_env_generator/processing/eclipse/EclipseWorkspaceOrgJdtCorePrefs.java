@@ -12,9 +12,6 @@
 package tribefire.extension.setup.dev_env_generator.processing.eclipse;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 public class EclipseWorkspaceOrgJdtCorePrefs extends EclipseWorkspaceHelper {
 
@@ -25,6 +22,8 @@ public class EclipseWorkspaceOrgJdtCorePrefs extends EclipseWorkspaceHelper {
 				"org.eclipse.jdt.core.prefs", // file name
 				"""
 				eclipse.preferences.version=1
+				org.eclipse.jdt.core.classpathVariable.HICONIC_SDK_HOME=@HICONIC_SDK_HOME@
+				org.eclipse.jdt.core.classpathVariable.DEV_ENV_HOME=@DEV_ENV_HOME@
 				org.eclipse.jdt.core.classpathVariable.TOMCAT_HOME=@TOMCAT_HOME@
 				org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
 				org.eclipse.jdt.core.compiler.codegen.targetPlatform=17
@@ -33,7 +32,7 @@ public class EclipseWorkspaceOrgJdtCorePrefs extends EclipseWorkspaceHelper {
 				org.eclipse.jdt.core.compiler.problem.enumIdentifier=error
 				org.eclipse.jdt.core.compiler.release=enabled
 				org.eclipse.jdt.core.compiler.source=17
-				"""); // fill below!
+				""");
 
 	}
 

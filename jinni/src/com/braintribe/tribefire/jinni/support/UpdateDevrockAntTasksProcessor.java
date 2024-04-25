@@ -43,7 +43,6 @@ import com.braintribe.utils.lcd.NullSafe;
 
 public class UpdateDevrockAntTasksProcessor extends AbstractUpdator implements ServiceProcessor<UpdateDevrockAntTasks, Neutral> {
 
-	private static final String REPOSITORY_CONFIGURATION_DEVROCK_YAML = "repository-configuration-devrock.yaml";
 	private static boolean BREAK = false;
 	private static boolean CONTINUE = true;
 

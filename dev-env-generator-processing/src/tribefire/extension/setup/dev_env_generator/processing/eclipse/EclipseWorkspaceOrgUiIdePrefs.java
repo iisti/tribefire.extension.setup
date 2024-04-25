@@ -13,9 +13,9 @@ package tribefire.extension.setup.dev_env_generator.processing.eclipse;
 
 import java.io.File;
 
-public class EclipseWorkspaceUiCorePrefs extends EclipseWorkspaceHelper {
+public class EclipseWorkspaceOrgUiIdePrefs extends EclipseWorkspaceHelper {
 
-	public EclipseWorkspaceUiCorePrefs(File devEnv) {
+	public EclipseWorkspaceOrgUiIdePrefs(File devEnv) {
 
 		super(devEnv, //
 				".metadata/.plugins/org.eclipse.core.runtime/.settings", // folder name in eclipse-workspace

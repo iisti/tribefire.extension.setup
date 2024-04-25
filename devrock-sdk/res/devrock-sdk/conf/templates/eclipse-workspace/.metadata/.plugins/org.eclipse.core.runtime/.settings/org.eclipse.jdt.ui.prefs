@@ -134,6 +134,7 @@ cleanup.useless_return=false
 cleanup.valueof_rather_than_instantiation=false
 cleanup_profile=_Hiconic
 cleanup_settings_version=2
+content_assist_favorite_static_members=java.util.Collections.*
 content_assist_proposals_background=255,255,255
 content_assist_proposals_foreground=0,0,0
 eclipse.preferences.version=1

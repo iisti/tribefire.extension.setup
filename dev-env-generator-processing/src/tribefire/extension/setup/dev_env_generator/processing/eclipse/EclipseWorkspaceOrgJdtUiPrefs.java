@@ -12,20 +12,16 @@
 package tribefire.extension.setup.dev_env_generator.processing.eclipse;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
-public class EclipseWorkspaceJdtUiPrefs extends EclipseWorkspaceHelper {
+public class EclipseWorkspaceOrgJdtUiPrefs extends EclipseWorkspaceHelper {
 
-	public EclipseWorkspaceJdtUiPrefs(File devEnv) {
+	public EclipseWorkspaceOrgJdtUiPrefs(File devEnv) {
 
 		super(devEnv, //
 				".metadata/.plugins/org.eclipse.core.runtime/.settings", // folder name in eclipse-workspace
-				"net.sf.eclipse.jdt.ui.prefs", // file name
+				"org.eclipse.jdt.ui.prefs", // file name
 				// content IF not patched but created new
 				"""
-				org.eclipse.jdt.core.classpathVariable.TOMCAT_HOME=@TOMCAT_HOME@
 				cleanup.add_all=false
 				cleanup.add_default_serial_version_id=false
 				cleanup.add_generated_serial_version_id=true
@@ -168,8 +164,9 @@ public class EclipseWorkspaceJdtUiPrefs extends EclipseWorkspaceHelper {
 				cleanup.valueof_rather_than_instantiation=false
 				cleanup_profile=_Braintribe
 				cleanup_settings_version=2
+				content_assist_favorite_static_members=java.util.Collections.*
 				content_assist_proposals_background=255,255,255
-				content_assist_proposals_foreground=35,38,41
+				content_assist_proposals_foreground=0,0,0
 				eclipse.preferences.version=1
 				formatter_profile=_Braintribe
 				formatter_settings_version=22

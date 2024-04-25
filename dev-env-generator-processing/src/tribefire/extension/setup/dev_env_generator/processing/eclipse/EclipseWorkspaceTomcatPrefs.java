@@ -16,7 +16,6 @@ import java.io.File;
 public class EclipseWorkspaceTomcatPrefs extends EclipseWorkspaceHelper {
 
 	public EclipseWorkspaceTomcatPrefs(File devEnv) {
-
 		super(devEnv, //
 				".metadata/.plugins/org.eclipse.core.runtime/.settings", // folder name in eclipse-workspace
 				"net.sf.eclipse.tomcat.prefs", // file name
@@ -26,9 +25,9 @@ public class EclipseWorkspaceTomcatPrefs extends EclipseWorkspaceHelper {
 				eclipse.preferences.version=1
 				jvmParameters=-Djava.util.logging.config.file%3Dconf%2Flogging.properties;-Djava.util.logging.manager%3Dcom.braintribe.logging.juli.BtClassLoaderLogManager;
 				managerUrl=http\\://localhost\\:8080/manager
-				contextsDir=@DEVENV@/tf-setups/main/runtime/host/conf/Catalina/localhost
-				tomcatConfigFile=@DEVENV@/tf-setups/main/runtime/host/conf/server.xml
-				tomcatDir=@DEVENV@/tf-setups/main/runtime/host
+				contextsDir=@TOMCAT_HOME@/conf/Catalina/localhost
+				tomcatConfigFile=@TOMCAT_HOME@/conf/server.xml
+				tomcatDir=@TOMCAT_HOME@
 				tomcatVersion=tomcatV9
 				""");
 	}
