@@ -28,10 +28,10 @@ import org.apache.velocity.shaded.commons.io.FilenameUtils;
 import com.braintribe.cfg.Required;
 import com.braintribe.codec.marshaller.api.GmSerializationOptions;
 import com.braintribe.codec.marshaller.api.MarshallException;
-import com.braintribe.codec.marshaller.yaml.YamlConfigurations;
 import com.braintribe.codec.marshaller.yaml.YamlMarshaller;
 import com.braintribe.exception.Exceptions;
 import com.braintribe.gm.config.yaml.ConfigVariableResolver;
+import com.braintribe.gm.config.yaml.YamlConfigurations;
 import com.braintribe.logging.Logger;
 import com.braintribe.model.service.api.ServiceRequest;
 import com.braintribe.tribefire.jinni.support.request.RequestPersistenceManipulator;
@@ -101,8 +101,9 @@ public class JinniAlias extends RequestPersistenceManipulator {
 	public Path getDirectory() {
 		File devEnv = isDevEnv();
 		
-		if (devEnv != null)
+		if (devEnv != null) {
 			return new File(devEnv, "commands").toPath();
+		}
 		
 		return super.getDirectory();
 	}
@@ -132,8 +133,9 @@ public class JinniAlias extends RequestPersistenceManipulator {
 
 	/** Gets the alias entries stored in the repository. */
 	private Map<String, Path> getAliases(Path aliasDirectory) throws IOException {
-		if (!Files.exists(aliasDirectory))
+		if (!Files.exists(aliasDirectory)) {
 			return new HashMap<>();
+		}
 		
 		return Files.walk(aliasDirectory).filter(Files::isRegularFile).map(this::getAliasFromFile)
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

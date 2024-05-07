@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="UTF-8"?><!--
 Copyright BRAINTRIBE TECHNOLOGY GMBH, Austria, 2002-2022
 
 This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
@@ -18,8 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
     <artifactId>jinni</artifactId>
     <version>2.1.667</version>
     <packaging>zip</packaging>
-    <properties>
-    </properties>
+    <properties/>
     <licenses>
         <license>
             <name>GNU Lesser General Public License v3.0</name>
@@ -227,11 +226,6 @@ You should have received a copy of the GNU Lesser General Public License along w
             <version>${V.com.braintribe.devrock}</version>
         </dependency>
         <dependency>
-            <groupId>com.braintribe.gm</groupId>
-            <artifactId>modeled-yaml-config</artifactId>
-            <version>${V.com.braintribe.gm}</version>
-        </dependency>
-        <dependency>
             <groupId>tribefire.extension.setup</groupId>
             <artifactId>jinni-config-model</artifactId>
             <version>${V.tribefire.extension.setup}</version>
@@ -245,6 +239,11 @@ You should have received a copy of the GNU Lesser General Public License along w
             <groupId>tribefire.extension.setup</groupId>
             <artifactId>dev-env-generator-processing</artifactId>
             <version>${V.tribefire.extension.setup}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.braintribe.gm</groupId>
+            <artifactId>modeled-yaml-config</artifactId>
+            <version>${V.com.braintribe.gm}</version>
         </dependency>
     </dependencies>
 </project>
