@@ -49,13 +49,16 @@ public class CreateTribefireRuntimeManifestProcessor {
 
 	public enum ComponentType {
 
+		// CPU requests are intentionally really low, because an idle deployment doesn't need much.
+		// for any non-idle systems, e.g. ab actual production or a runtime with automated jobs, etc.,
+		// one anyway shoud specify resources explicitly.
 		// @formatter:off
 		//                         CPU request / limit      Memory request / limit
-		services("services",               500,   3000,               1024,   3072),
-		controlcenter("control-center",    100,   1000,                192,    512),
-		explorer("explorer",               100,   1000,                192,    512),
-		modeler("modeler",                 100,   1000,                192,    512),
-		webreader("web-reader",            100,   1000,                192,    512);
+		services("services",               50,   3000,               1024,   3072),
+		controlcenter("control-center",    10,   1000,                192,    512),
+		explorer("explorer",               10,   1000,                192,    512),
+		modeler("modeler",                 10,   1000,                192,    512),
+		webreader("web-reader",            10,   1000,                192,    512);
 		// @formatter:on
 
 		private final String componentTypeName;
