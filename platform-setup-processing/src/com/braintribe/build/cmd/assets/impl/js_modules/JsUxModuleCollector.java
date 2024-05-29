@@ -98,9 +98,9 @@ public class JsUxModuleCollector implements PlatformAssetCollector, PlatformAsse
 		}
 
 		private PathList resolveJsLibrariesParent() {
-			String debugProjectAsStr = request.getDebugProject();
-			if (debugProjectAsStr != null) {
-				String[] debugProject = ModuleSetupHelper.parseCondensedArtifact(debugProjectAsStr);
+			String[] debugProject = ModuleSetupHelper.resolveDebugProject(request);
+			
+			if (debugProject != null) {
 				return context.projectionBaseFolder(false).push("debug").push(debugProject[1]).push("context");
 			} else {
 				return context.projectionBaseFolder(false).push(WEBAPP_FOLDER_NAME).push(TRIBEFIRE_SERVICES);

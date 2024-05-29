@@ -169,19 +169,11 @@ public class ModuleCollector implements PlatformAssetCollector, PlatformAssetDis
 			PlatformSetupConfig request = context.request();
 
 			this.context = context;
-			this.debugProject = resolveDebugProject(request);
+			this.debugProject = ModuleSetupHelper.resolveDebugProject(request);
 			this.debugJs = request.getDebugJs();
 			this.preProcessClasspaths = request.getPreProcessClasspaths();
 
 			this.storagePublicResourcesDir = context.storagePublicResourcesFolder(false).toPath();
-		}
-
-		private static String[] resolveDebugProject(PlatformSetupConfig request) {
-			if (!request.getDebugJava())
-				return ModuleSetupHelper.parseCondensedArtifact(request.getDebugProject());
-
-			String[] sd = ModuleSetupHelper.parseCondensedArtifact(request.getSetupDependency());
-			return new String[] { sd[0], sd[1] + "-debug", sd[2] };
 		}
 
 		// ##########################################################################

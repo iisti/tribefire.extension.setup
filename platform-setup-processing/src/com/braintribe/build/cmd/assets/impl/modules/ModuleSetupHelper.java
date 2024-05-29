@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import com.braintribe.model.artifact.analysis.AnalysisArtifact;
 import com.braintribe.model.artifact.consumable.Part;
 import com.braintribe.model.generic.reflection.GenericModelException;
+import com.braintribe.model.platform.setup.api.PlatformSetupConfig;
 import com.braintribe.model.version.Version;
 import com.braintribe.model.version.VersionExpression;
 import com.braintribe.model.version.VersionInterval;
@@ -39,17 +40,27 @@ public class ModuleSetupHelper {
 	static final int ARTIFACT_ID = 1;
 	static final int VERSION = 2;
 
+	public static String[] resolveDebugProject(PlatformSetupConfig request) {
+		if (!request.getDebugJava())
+			// may return null
+			return ModuleSetupHelper.parseCondensedArtifact(request.getDebugProject());
+
+		String[] sd = ModuleSetupHelper.parseCondensedArtifact(request.getSetupDependency());
+		return new String[] { sd[0], sd[1] + "-debug", sd[2] };
+	}
+
+	
 	/** Parse a condensed name in format groupId:artifactId#version, with groupId and version being optional. */
-	public static String[] parseCondensedArtifact(String condensedName) {
+	private static String[] parseCondensedArtifact(String condensedName) {
 		return parseCondensedArtifact(condensedName, "tribefire.synthetic", "1.0");
 	}
 
 	private static String[] parseCondensedArtifact(String condensedName, String defaultGroup, String defaultVersion) {
-		final char GROUP_DELIMITER = ':';
-		final char VERSION_DELIMITER = '#';
-
 		if (StringTools.isEmpty(condensedName))
 			return null;
+
+		final char GROUP_DELIMITER = ':';
+		final char VERSION_DELIMITER = '#';
 
 		String[] result = new String[3];
 
