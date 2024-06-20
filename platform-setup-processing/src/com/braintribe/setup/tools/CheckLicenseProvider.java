@@ -85,6 +85,8 @@ public interface CheckLicenseProvider {
 	void addErrorMsg(String string);
 
 	String getHeaderText();
+	
+	String getCopyrightHeaderText(); 
 
 	// check if file contains windows-style CR ("\r\n")
 	default boolean checkCRLF(String data) {
@@ -184,7 +186,9 @@ public interface CheckLicenseProvider {
 
 		data.rootDir = rootDir;
 		
-		String headerText = getHeaderText();
+		String headerText = data.license.contains("Copyright ")? 
+				getCopyrightHeaderText(): 
+				getHeaderText();
 		
 		if (headerText.isEmpty()) {
 			addErrorMsg("Cannot process without licence-header data in " + fileName + "! ");

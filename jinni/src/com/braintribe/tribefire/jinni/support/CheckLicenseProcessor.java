@@ -37,8 +37,10 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -60,6 +62,7 @@ import com.braintribe.model.processing.service.api.ReasonedServiceProcessor;
 import com.braintribe.model.processing.service.api.ServiceRequestContext;
 import com.braintribe.model.service.api.result.Neutral;
 import com.braintribe.setup.tools.CheckLicenseProvider;
+import com.braintribe.utils.lcd.FileTools;
 import com.braintribe.utils.xml.XmlTools;
 
 public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLicense, Neutral>, InitializationAware {
@@ -69,6 +72,7 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 	private boolean fixCRLF = false;
 	private List<String> excludedFiles = new ArrayList<String>();
 	private List<String> whiteListJavadoc = new ArrayList<String>();
+	private String copyrightHeader = "";
 	private String headerTemplate = "";
 	private Element pomLicenseFragment = null;
 	private boolean checkOnly = true;
@@ -96,6 +100,7 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 		dedicatedNotice = Paths.get(licenseDir, "default-NOTICE.txt"); // no comments allowed: AS-IS
 		Path excludedList = Paths.get(licenseDir, "excluded-from-licensing.txt");
 		Path dedicatedHeaderPath = Paths.get(licenseDir, "license-header.txt");
+		Path dedicatedCopyrightHeaderPath = Paths.get(licenseDir, "copyright-header.txt");
 		Path dedicatedPomFragmentPath = Paths.get(licenseDir, "pom-license-fragment.xml");
 		Path whitelistPath = Paths.get(licenseDir, "whitelist-jdoc-authors.txt");
 
@@ -105,6 +110,14 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 			headerTemplate = Files.readString(dedicatedHeaderPath).trim();
 		} catch (IOException e) {
 			throw new RuntimeException("Could not read " + dedicatedHeaderPath, e);
+		}
+		
+		if (Files.exists(dedicatedCopyrightHeaderPath)) {
+			try {
+				copyrightHeader = Files.readString(dedicatedCopyrightHeaderPath) + headerTemplate;
+			} catch (IOException e) {
+				throw new RuntimeException("Could not read " + dedicatedCopyrightHeaderPath, e);
+			}
 		}
 		
 		try {
@@ -200,7 +213,10 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 		int numCRLF = 0; // how many Windows-style files
 		int numCRLFfixed = 0;
 		int numFilesCopy = 0; // how many LICENSE/NOTICE/COPYING* files copied
+		int numFilesDelete = 0; // how many LICENSE/NOTICE/COPYING* files deleted
 		int numFilesWrong = 0;
+		
+		Set<String> dryHandledExtensions = new HashSet<>();
 
 		String errorMsg = "";
 		File rootDir;
@@ -212,14 +228,29 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 			for (String exclude : excludes)
 				excludedFilePatterns.add(FileSystems.getDefault().getPathMatcher("glob:" + exclude));
 		}
-
+		
 		void checkRepo(Path repo, String name, Path dedicatedContent) {
 
-			if (!dedicatedContent.toFile().exists())
-				return;
-
-			// there should be a LICENSE file in a repo
+			// path of the LICENSE file in a repo
 			Path path = Paths.get(repo.toString(), name);
+			
+			if (!dedicatedContent.toFile().exists()) {
+				// remove if the repo has this file
+				if (Files.exists(path)) {
+					numFilesDelete++;
+					if (checkOnly)
+						System.out.println("dry deleting " + path.toAbsolutePath().toString());
+					else {
+						try {
+							Files.copy(dedicatedContent, path, StandardCopyOption.REPLACE_EXISTING);
+						} catch (IOException e) {
+							errorMsg += "Cannot copy file " + path + " ! ";
+							System.out.println(e.toString());
+						}
+					}
+				}
+				return;
+			}
 
 			for (PathMatcher checkExclude : excludedFilePatterns)
 				if (checkExclude.matches(path.toAbsolutePath())) {
@@ -261,6 +292,9 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 						errorMsg += "Cannot copy file " + path + " ! ";
 						System.out.println(e.toString());
 					}
+				}
+				else {
+					System.out.println("dry copying " + dedicatedContent.toAbsolutePath().toString() + " to " + path.toAbsolutePath().toString());
 				}
 			}
 		}
@@ -318,14 +352,12 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 						check = analyseCheckResult(check, fileName, rootDir);
 						if (check.result) {
 							updateRequired = getUpdateRequired() + 1;
-							if (!checkOnly) {
-								data = assembleNewData(check, MODE.JAVA);
-								needsUpdateOnDisk = true;
-							}
+							data = assembleNewData(check, MODE.JAVA);
+							needsUpdateOnDisk = true;
 						}
 						if (fixJDoc) {
 							CheckJdocResult checkJDoc = checkJdoc(data, whiteListJavadoc, authorList);
-							if (!checkOnly && checkJDoc.needsUpdate) {
+							if (checkJDoc.needsUpdate) {
 								needsUpdateOnDisk = true;
 								data = checkJDoc.data;
 							}
@@ -338,15 +370,25 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 						check = analyseCheckResult(check, fileName, rootDir);
 						if (check.result) {
 							updateRequired = getUpdateRequired() + 1;
-							if (!checkOnly) {
-								data = assembleNewData(check, MODE.XML);
-								needsUpdateOnDisk = true;
-							}
+							data = assembleNewData(check, MODE.XML);
+							needsUpdateOnDisk = true;
 						}
 					}
 
 					if (needsUpdateOnDisk) {
-						writeToDisk(data, file);
+						if (!checkOnly) {
+							writeToDisk(data, file);
+						}
+						else {
+							String sampleName = file.getFileName().toString();
+							String sampleKey = sampleName.equals("pom.xml")? sampleName: FileTools.getExtension(sampleName); 
+							if (dryHandledExtensions.add(sampleKey)) {
+								System.out.println(sampleKey + " sample " + file.toAbsolutePath());
+								System.out.println("---------------------------------------------------");
+								System.out.print(data);
+								System.out.println("---------------------------------------------------");
+							}
+						}
 					}
 				} catch (FileNotFoundException e) {
 					errorMsg += "File " + file + " not found! ";
@@ -454,6 +496,10 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 
 		public String getHeaderText() {
 			return headerTemplate;
+		}
+		
+		public String getCopyrightHeaderText() {
+			return copyrightHeader;
 		}
 		
 		public Element getPomLicenseFragment() {
