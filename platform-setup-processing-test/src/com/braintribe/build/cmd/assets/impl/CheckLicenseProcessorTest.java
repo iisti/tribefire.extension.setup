@@ -121,6 +121,8 @@ public class CheckLicenseProcessorTest extends AbstractTest implements CheckLice
 	public boolean getCheckOnly() {
 		return true;
 	}
+	
+	
 
 	@Override
 	public void addErrorMsg(String string) {
@@ -129,6 +131,11 @@ public class CheckLicenseProcessorTest extends AbstractTest implements CheckLice
 	@Override
 	public String getHeaderText() {
 		return "und wenn sie nicht gestorben\n sind dann leben sie noch heute\ndas copyriGht ist von Gretel 1742";
+	}
+
+	@Override
+	public String getCopyrightHeaderText() {
+		return getHeaderText();
 	}
 
 }
