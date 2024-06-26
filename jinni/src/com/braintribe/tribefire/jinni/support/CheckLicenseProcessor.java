@@ -242,9 +242,9 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 						System.out.println("dry deleting " + path.toAbsolutePath().toString());
 					else {
 						try {
-							Files.copy(dedicatedContent, path, StandardCopyOption.REPLACE_EXISTING);
+							Files.delete(path);
 						} catch (IOException e) {
-							errorMsg += "Cannot copy file " + path + " ! ";
+							errorMsg += "Cannot delete file " + path + " ! ";
 							System.out.println(e.toString());
 						}
 					}
@@ -494,14 +494,17 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 			return FileVisitResult.CONTINUE;
 		}
 
+		@Override
 		public String getHeaderText() {
 			return headerTemplate;
 		}
 		
+		@Override
 		public String getCopyrightHeaderText() {
 			return copyrightHeader;
 		}
 		
+		@Override
 		public Element getPomLicenseFragment() {
 			return pomLicenseFragment;
 		}
