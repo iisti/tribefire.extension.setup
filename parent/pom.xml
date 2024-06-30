@@ -33,6 +33,7 @@ You should have received a copy of the GNU Lesser General Public License along w
         <V.tribefire.cortex.assets>[3.0,3.1)</V.tribefire.cortex.assets>
         <V.tribefire.cortex.assets.templates>[2.0,2.1)</V.tribefire.cortex.assets.templates>
         <V.hiconic.platform.reflex>[1.0,1.1)</V.hiconic.platform.reflex>
+        <V.hiconic.ext.graphql>[4.0,4.1)</V.hiconic.ext.graphql>
         <!-- extensions -->
         <V.tribefire.extension.artifact>[2.0,2.1)</V.tribefire.extension.artifact>
         <V.tribefire.extension.xmi>[2.0,2.1)</V.tribefire.extension.xmi>

@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="UTF-8"?><!--
 Copyright BRAINTRIBE TECHNOLOGY GMBH, Austria, 2002-2022
 
 This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
@@ -58,6 +58,12 @@ You should have received a copy of the GNU Lesser General Public License along w
             <artifactId>platform-setup-package-model</artifactId>
             <version>${V.tribefire.extension.setup}</version>
             <?tag asset?>
+        </dependency>
+        <dependency>
+            <groupId>hiconic.ext.graphql</groupId>
+            <artifactId>graphql-schema-api-model</artifactId>
+            <version>${V.hiconic.ext.graphql}</version>
+            <?tag asset ?>
         </dependency>
     </dependencies>
 </project>

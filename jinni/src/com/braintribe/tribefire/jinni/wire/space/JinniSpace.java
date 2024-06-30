@@ -93,6 +93,8 @@ import com.braintribe.wire.api.annotation.Import;
 import com.braintribe.wire.api.annotation.Managed;
 import com.braintribe.wire.api.context.WireContextConfiguration;
 
+import hiconic.ext.graphql.GraphQlSchemaProcessor;
+import hiconic.ext.graphql.schema_api.model.GraphQlSchemaRequest;
 import tribefire.extension.artifact.management.api.model.request.ArtifactManagementRequest;
 import tribefire.extension.artifact.management.processing.ArtifactManagementProcessor;
 import tribefire.extension.hydrux.setup.model.HydruxSetupRequest;
@@ -189,7 +191,6 @@ public class JinniSpace implements JinniContract {
 
 		// JS Ux Setup requests
 		bean.register(JsSetupRequest.T, jsSetup.jsSetupProcessor());
-
 		bean.register(HydruxSetupRequest.T, hydruxSetupProcessor());
 
 		// Artifact Management
@@ -198,6 +199,9 @@ public class JinniSpace implements JinniContract {
 		// CSA Persistence Management
 		bean.register(CollaborativePersistenceRequest.T, offlineCsaPersistenceProcessor());
 
+		// GraphQL
+		bean.register(GraphQlSchemaRequest.T, graphqlSchemaProcessor());
+		
 		// XMI Processing
 		bean.register(ArgoExchangeRequest.T, argoExchangeProcessor());
 
@@ -439,6 +443,11 @@ public class JinniSpace implements JinniContract {
 		bean.setVirtualEnvironment(dependencyEnvironment.virtualEnvironment());
 
 		return bean;
+	}
+
+	@Managed
+	private GraphQlSchemaProcessor graphqlSchemaProcessor() {
+		return new GraphQlSchemaProcessor();
 	}
 
 	@Managed
