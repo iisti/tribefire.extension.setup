@@ -12,12 +12,13 @@
 package com.braintribe.tribefire.jinni.support.request.completion;
 
 import com.braintribe.model.generic.reflection.EntityType;
-import com.braintribe.model.jinni.meta.FileName;
-import com.braintribe.model.jinni.meta.FolderName;
 import com.braintribe.model.meta.GmEnumType;
 import com.braintribe.model.meta.GmLinearCollectionType;
 import com.braintribe.model.meta.GmMapType;
 import com.braintribe.model.meta.GmType;
+import com.braintribe.model.meta.data.MetaData;
+import com.braintribe.model.meta.data.constraint.FileName;
+import com.braintribe.model.meta.data.constraint.FolderName;
 import com.braintribe.model.processing.meta.cmd.builders.PropertyMdResolver;
 import com.braintribe.model.resource.FileResource;
 import com.braintribe.model.resource.Resource;
@@ -79,9 +80,9 @@ import com.braintribe.utils.lcd.NullSafe;
 					return "boolean";
 
 				case STRING: {
-					if (propertyMdResolver.is(FileName.T))
+					if (hasMd(FileName.T))
 						return FILE_TYPE;
-					if (propertyMdResolver.is(FolderName.T))
+					if (hasMd(FolderName.T))
 						return FOLDER_TYPE;
 					break;
 				}
@@ -101,6 +102,10 @@ import com.braintribe.utils.lcd.NullSafe;
 			}
 
 			return null;
+		}
+
+		private boolean hasMd(EntityType<? extends MetaData> type) {
+			return propertyMdResolver.meta(type).exclusive() != null;
 		}
 
 	}

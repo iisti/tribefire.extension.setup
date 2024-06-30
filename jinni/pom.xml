@@ -97,11 +97,6 @@ You should have received a copy of the GNU Lesser General Public License along w
             <artifactId>jinni-api-model</artifactId>
             <version>${V.tribefire.extension.setup}</version>
         </dependency>
-        <dependency>
-            <groupId>tribefire.extension.setup</groupId>
-            <artifactId>jinni-meta-data-model</artifactId>
-            <version>${V.tribefire.extension.setup}</version>
-        </dependency>
         <!-- Platform Setup -->
         <dependency>
             <groupId>tribefire.extension.setup</groupId>

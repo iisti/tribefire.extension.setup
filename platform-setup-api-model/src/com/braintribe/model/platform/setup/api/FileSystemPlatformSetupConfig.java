@@ -12,6 +12,7 @@
 package com.braintribe.model.platform.setup.api;
 
 import com.braintribe.model.generic.annotation.meta.Description;
+import com.braintribe.model.generic.annotation.meta.FolderName;
 import com.braintribe.model.generic.reflection.EntityType;
 import com.braintribe.model.generic.reflection.EntityTypes;
 
@@ -22,6 +23,7 @@ public interface FileSystemPlatformSetupConfig extends PlatformSetupConfig {
 	String packageBaseDir = "packageBaseDir";
 
 	@Description("The directory in which transitively resolved asset data is prepared to be further processed.")
+	@FolderName
 	String getPackageBaseDir();
 	void setPackageBaseDir(String packageBaseDir);
 }

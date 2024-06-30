@@ -14,6 +14,7 @@ package com.braintribe.model.platform.setup.api.logging;
 import com.braintribe.model.generic.GenericEntity;
 import com.braintribe.model.generic.annotation.Initializer;
 import com.braintribe.model.generic.annotation.meta.Description;
+import com.braintribe.model.generic.annotation.meta.FolderName;
 import com.braintribe.model.generic.annotation.meta.Mandatory;
 import com.braintribe.model.generic.annotation.meta.Min;
 import com.braintribe.model.generic.reflection.EntityType;
@@ -42,6 +43,7 @@ public interface LoggingOptions extends GenericEntity {
 	void setLogFilesLogLevel(LogLevel logFilesLogLevel);
 
 	@Description("Directory to log to.")
+	@FolderName
 	String getLogFilesDir();
 	void setLogFilesDir(String logFilesDir);
 
