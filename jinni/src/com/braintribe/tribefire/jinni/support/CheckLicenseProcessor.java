@@ -79,7 +79,7 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 	Path dedicatedLicense = null;
 	Path dedicatedCopying = null;
 	Path dedicatedCopyingLesser = null;
-	Path dedicatedNotice = null;
+	// Path dedicatedNotice = null;
 
 	private Boolean fixJDoc;
 
@@ -97,7 +97,7 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 		dedicatedLicense = Paths.get(licenseDir, "default-LICENSE.txt"); // no comments allowed: AS-IS
 		dedicatedCopying = Paths.get(licenseDir, "default-COPYING.txt"); // no comments allowed: AS-IS
 		dedicatedCopyingLesser = Paths.get(licenseDir, "default-COPYING-LESSER.txt"); // no comments allowed: AS-IS
-		dedicatedNotice = Paths.get(licenseDir, "default-NOTICE.txt"); // no comments allowed: AS-IS
+		// dedicatedNotice = Paths.get(licenseDir, "default-NOTICE.txt"); // no comments allowed: AS-IS
 		Path excludedList = Paths.get(licenseDir, "excluded-from-licensing.txt");
 		Path dedicatedHeaderPath = Paths.get(licenseDir, "license-header.txt");
 		Path dedicatedCopyrightHeaderPath = Paths.get(licenseDir, "copyright-header.txt");
@@ -174,7 +174,7 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 
 		GlobFiles gf = new GlobFiles(excludedFiles, dir);
 		gf.checkRepo(dir.toPath(), "LICENSE", dedicatedLicense); // check repo itself LICENSE
-		gf.checkRepo(dir.toPath(), "NOTICE", dedicatedNotice); // check repo itself NOTICE
+		// gf.checkRepo(dir.toPath(), "NOTICE", dedicatedNotice); // check repo itself NOTICE
 		gf.checkRepo(dir.toPath(), "COPYING", dedicatedCopying); // check repo itself COPYING
 		gf.checkRepo(dir.toPath(), "COPYING.LESSER", dedicatedCopyingLesser); // check repo itself COPYING.LESSER
 
