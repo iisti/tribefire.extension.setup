@@ -25,12 +25,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.braintribe.utils.DOMTools;
-import com.braintribe.utils.xml.XmlTools;
 
 /**
  * Tools for CheckLicenseProcessor
- * 
- *
  */
 public interface CheckLicenseProvider {
 
@@ -227,14 +224,20 @@ public interface CheckLicenseProvider {
 				break;
 			}
 			case JAVA: {
-				Scanner scanner = new Scanner(header.trim());
-				writer.write("// ============================================================================\n");
-				while (scanner.hasNextLine()) {
-					writer.write("// ");
-					writer.write(scanner.nextLine());
-					writer.write("\n");
+				try (Scanner scanner = new Scanner(header.trim())) {
+					writer.write("// ============================================================================\n");
+					while (scanner.hasNextLine()) {
+						String line = scanner.nextLine();
+
+						writer.write("//");
+						if (!line.isBlank()) {
+							writer.write(" ");
+							writer.write(line);
+						}
+						writer.write("\n");
+					}
+					writer.write("// ============================================================================\n");
 				}
-				writer.write("// ============================================================================\n");
 				break;
 			}
 			case OTHER:
