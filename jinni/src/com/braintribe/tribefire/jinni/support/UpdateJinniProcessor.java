@@ -19,7 +19,6 @@ import static com.braintribe.console.ConsoleOutputs.println;
 import static com.braintribe.console.ConsoleOutputs.red;
 import static com.braintribe.console.ConsoleOutputs.sequence;
 import static com.braintribe.console.ConsoleOutputs.text;
-import static com.braintribe.console.ConsoleOutputs.yellow;
 import static com.braintribe.model.service.api.result.Neutral.NEUTRAL;
 import static com.braintribe.setup.tools.TfSetupOutputs.outProperty;
 import static com.braintribe.setup.tools.TfSetupTools.artifactName;
@@ -189,10 +188,6 @@ public class UpdateJinniProcessor extends AbstractUpdator implements ServiceProc
 			return CONTINUE;
 		}
 
-		private void outWarning(String text) {
-			println(sequence(yellow("Warning: "), text(text)));
-		}
-		
 		private void outError(String text) {
 			println(sequence(red("Error: "), text(text)));
 		}

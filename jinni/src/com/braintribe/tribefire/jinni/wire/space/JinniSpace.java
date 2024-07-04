@@ -60,6 +60,7 @@ import com.braintribe.model.jinni.api.JinniReflectionRequest;
 import com.braintribe.model.jinni.api.SpawnedJinniRequest;
 import com.braintribe.model.jinni.api.UpdateDevrockAntTasks;
 import com.braintribe.model.jinni.api.UpdateJinniRequest;
+import com.braintribe.model.jinni.api.UpdateSdk;
 import com.braintribe.model.jinni.api.template.CreateArtifactsRequest;
 import com.braintribe.model.meta.GmEntityType;
 import com.braintribe.model.meta.GmMetaModel;
@@ -84,6 +85,7 @@ import com.braintribe.tribefire.jinni.support.JinniReflectionProcessor;
 import com.braintribe.tribefire.jinni.support.SpawnedJinniRequestProcessor;
 import com.braintribe.tribefire.jinni.support.UpdateDevrockAntTasksProcessor;
 import com.braintribe.tribefire.jinni.support.UpdateJinniProcessor;
+import com.braintribe.tribefire.jinni.support.UpdateSdkProcessor;
 import com.braintribe.tribefire.jinni.support.request.alias.AliasProcessor;
 import com.braintribe.tribefire.jinni.support.request.alias.JinniAlias;
 import com.braintribe.tribefire.jinni.support.request.completion.GenerateShellCompletionScriptProcessor;
@@ -174,6 +176,7 @@ public class JinniSpace implements JinniContract {
 		bean.register(com.braintribe.model.jinni.api.ListAliases.T, aliasProcessor());
 		bean.register(UpdateJinniRequest.T, updateJinniProcessor());
 		bean.register(UpdateDevrockAntTasks.T, updateBtAntTasksProcessor());
+		bean.register(UpdateSdk.T, updateSdkProcessor());
 		bean.register(SpawnedJinniRequest.T, spawnedJinniRequestProcessor());
 		bean.register(CheckLicense.T, checkLicenseProcessor());
 
@@ -379,6 +382,15 @@ public class JinniSpace implements JinniContract {
 	@Managed
 	public UpdateJinniProcessor updateJinniProcessor() {
 		UpdateJinniProcessor bean = new UpdateJinniProcessor();
+		bean.setJinniInstallationDir(dependencyEnvironment.installationDir());
+		bean.setVirtualEnvironment(dependencyEnvironment.virtualEnvironment());
+		bean.setAdditionalRepositoryConfigurationLocations(additionalUpdateRepositoryConfigurationLocations());
+		return bean;
+	}
+	
+	@Managed
+	public UpdateSdkProcessor updateSdkProcessor() {
+		UpdateSdkProcessor bean = new UpdateSdkProcessor();
 		bean.setJinniInstallationDir(dependencyEnvironment.installationDir());
 		bean.setVirtualEnvironment(dependencyEnvironment.virtualEnvironment());
 		bean.setAdditionalRepositoryConfigurationLocations(additionalUpdateRepositoryConfigurationLocations());
