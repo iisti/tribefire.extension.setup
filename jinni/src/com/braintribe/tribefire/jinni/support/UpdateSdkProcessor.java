@@ -13,6 +13,7 @@ import static com.braintribe.console.ConsoleOutputs.println;
 import static com.braintribe.console.ConsoleOutputs.red;
 import static com.braintribe.console.ConsoleOutputs.sequence;
 import static com.braintribe.console.ConsoleOutputs.text;
+import static com.braintribe.console.ConsoleOutputs.yellow;
 import static com.braintribe.model.service.api.result.Neutral.NEUTRAL;
 import static com.braintribe.setup.tools.TfSetupOutputs.outProperty;
 import static com.braintribe.setup.tools.TfSetupTools.artifactName;
@@ -97,7 +98,9 @@ public class UpdateSdkProcessor extends AbstractUpdator implements ServiceProces
 		}
 
 		private void printUpdateSuccessful() {
-			outProperty("Jinni prepared in", tools2Dir.getAbsolutePath());
+			outProperty("Latest SDK tools prepared in", tools2Dir.getAbsolutePath());
+			println(sequence(text("\nPlease rename the"), yellow("'tools2'"), text(" to "), yellow("'tools'"), //
+					text(" in order to use the new version of the SDK.")));
 		}
 
 		private boolean resolveSdkDir() {
@@ -122,6 +125,7 @@ public class UpdateSdkProcessor extends AbstractUpdator implements ServiceProces
 			outError("SDK directory not found. Neither HICONIC_SDK_HOME nor DEVROCK_SDK_HOME is set.");
 			return BREAK;
 		}
+
 		private File resolveDirFromEnv(String env) {
 			String value = System.getenv(env);
 			if (value == null)
@@ -187,8 +191,7 @@ public class UpdateSdkProcessor extends AbstractUpdator implements ServiceProces
 				throw new UncheckedIOException(e);
 			}
 
-			outProperty("hiconic-sdk tools copied as tools2: ", sdkDir.getAbsolutePath());
-			println(sequence(text("\nPlease rename the 'tools2' to 'tools' in order to use the new version of the SDK.")));
+			outProperty("hiconic-sdk tools copied as tools2", sdkDir.getAbsolutePath());
 
 			return CONTINUE;
 		}
