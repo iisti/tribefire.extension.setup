@@ -348,7 +348,7 @@ public class HelpProcessor implements ServiceProcessor<Help, Neutral> {
 				values = Stream.of("true", "false");
 				break;
 			case enumType:
-				values = Stream.of(((EnumType) type).getEnumValues()).map(Enum::name);
+				values = Stream.of(((EnumType<?>) type).getEnumValues()).map(Enum::name);
 				break;
 			default:
 				break;

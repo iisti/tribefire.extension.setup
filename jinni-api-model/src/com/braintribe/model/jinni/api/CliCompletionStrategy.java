@@ -34,10 +34,10 @@ public enum CliCompletionStrategy implements EnumBase {
 	/** suggest the shortest name or alias */
 	shortest;
 
-	public static final EnumType T = EnumTypes.T(CliCompletionStrategy.class);
+	public static final EnumType<CliCompletionStrategy> T = EnumTypes.T(CliCompletionStrategy.class);
 	
 	@Override
-	public EnumType type() {
+	public EnumType<CliCompletionStrategy> type() {
 		return T;
 	}
 }

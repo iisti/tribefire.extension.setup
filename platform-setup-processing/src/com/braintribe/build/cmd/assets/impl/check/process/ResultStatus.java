@@ -10,10 +10,10 @@ public enum ResultStatus implements EnumBase {
 	skipped,
 	failure;
 
-	public static final EnumType T = EnumTypes.T(ResultStatus.class);
+	public static final EnumType<ResultStatus> T = EnumTypes.T(ResultStatus.class);
 
 	@Override
-	public EnumType type() {
+	public EnumType<ResultStatus> type() {
 		return T;
 	}
 }

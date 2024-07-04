@@ -28,10 +28,10 @@ public enum LogLevel implements EnumBase {
 	FINER,
 	FINEST;
 
-	public final static EnumType T = EnumTypes.T(LogLevel.class);
+	public final static EnumType<LogLevel> T = EnumTypes.T(LogLevel.class);
 
 	@Override
-	public EnumType type() {
+	public EnumType<LogLevel> type() {
 		return T;
 	}
 }

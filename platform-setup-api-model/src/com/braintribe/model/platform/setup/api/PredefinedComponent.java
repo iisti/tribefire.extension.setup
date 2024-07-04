@@ -31,7 +31,7 @@ public enum PredefinedComponent implements EnumBase {
 	MQ("tribefire-mq"),
 	ADMIN_USER("tribefire-admin-user");
     
-	public static final EnumType T = EnumTypes.T(PredefinedComponent.class);
+	public static final EnumType<PredefinedComponent> T = EnumTypes.T(PredefinedComponent.class);
 	
 	private PredefinedComponent(String bindId) {
 		this.bindId = bindId;
@@ -40,7 +40,7 @@ public enum PredefinedComponent implements EnumBase {
 	private String bindId;
 
 	@Override
-	public EnumType type() {
+	public EnumType<PredefinedComponent> type() {
 		return T;
 	}
 	

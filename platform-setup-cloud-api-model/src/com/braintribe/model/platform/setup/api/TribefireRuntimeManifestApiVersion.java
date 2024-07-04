@@ -23,10 +23,10 @@ public enum TribefireRuntimeManifestApiVersion implements EnumBase {
 	v1alpha1,
 	v1;
 
-	public final static EnumType T = EnumTypes.T(TribefireRuntimeManifestApiVersion.class);
+	public final static EnumType<TribefireRuntimeManifestApiVersion> T = EnumTypes.T(TribefireRuntimeManifestApiVersion.class);
 
 	@Override
-	public EnumType type() {
+	public EnumType<TribefireRuntimeManifestApiVersion> type() {
 		return T;
 	}
 }

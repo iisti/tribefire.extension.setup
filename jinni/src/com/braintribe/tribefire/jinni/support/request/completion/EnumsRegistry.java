@@ -49,7 +49,7 @@ import com.braintribe.model.meta.GmEnumType;
 	}
 
 	private String resolveShortIdentifier(GmEnumType gmType) {
-		String shortName = gmType.<EnumType> reflectionType().getShortName();
+		String shortName = gmType.<EnumType<?>> reflectionType().getShortName();
 		Integer c = shortNameToCount.compute(shortName, (name, count) -> (count == null ? 1 : count + 1));
 		return c == 1 ? shortName : shortName + c;
 	}
