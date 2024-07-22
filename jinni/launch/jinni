@@ -10,4 +10,18 @@ else
     JAVA_EXECUTABLE="${JAVA_HOME}/bin/java"
 fi
 
-"$JAVA_EXECUTABLE" -Djinni.installationDir="$INST_DIR" -Dgm.ownCl=true -jar "$INST_DIR/lib/launch.jar" "$@"
+SHARED_LIB_PATH=$INST_DIR/../shared-lib
+PRIVATE_LIB_PATH=$INST_DIR/lib
+
+if [ -d "$PRIVATE_LIB_PATH" ]; then
+    LIB_PATH=$PRIVATE_LIB_PATH
+elif [ -d "$SHARED_LIB_PATH" ]; then
+    LIB_PATH=$SHARED_LIB_PATH
+else
+    echo "could not find any of: "
+    echo "  $PRIVATE_LIB_PATH"
+    echo "  $SHARED_LIB_PATH"
+    exit 1
+fi
+
+"$JAVA_EXECUTABLE" $JINNI_OPTS -Djinni.installationDir="$INST_DIR" -Dgm.ownCl=true -jar "$LIB_PATH/launch.jar" "$@"
