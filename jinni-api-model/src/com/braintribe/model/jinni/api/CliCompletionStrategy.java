@@ -24,7 +24,7 @@ import com.braintribe.model.generic.reflection.EnumTypes;
  * 
  * @author peter.gazdik
  */
-public enum CliCompletionStrategy implements EnumBase {
+public enum CliCompletionStrategy implements EnumBase<CliCompletionStrategy> {
 	/** suggest real name and all aliases */
 	all,
 

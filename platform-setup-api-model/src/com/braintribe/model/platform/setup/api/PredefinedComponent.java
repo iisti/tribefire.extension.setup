@@ -19,7 +19,7 @@ import com.braintribe.model.generic.base.EnumBase;
 import com.braintribe.model.generic.reflection.EnumType;
 import com.braintribe.model.generic.reflection.EnumTypes;
 
-public enum PredefinedComponent implements EnumBase {
+public enum PredefinedComponent implements EnumBase<PredefinedComponent> {
 	USER_SESSIONS_DB("tribefire-user-sessions-db"),
     USER_SESSION_STATISTICS_DB("tribefire-user-statistics-db"),
     AUTH_DB("tribefire-auth-db"),

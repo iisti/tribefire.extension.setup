@@ -4,7 +4,7 @@ import com.braintribe.model.generic.base.EnumBase;
 import com.braintribe.model.generic.reflection.EnumType;
 import com.braintribe.model.generic.reflection.EnumTypes;
 
-public enum ResultStatus implements EnumBase {
+public enum ResultStatus implements EnumBase<ResultStatus> {
 	success,
 	error,
 	skipped,

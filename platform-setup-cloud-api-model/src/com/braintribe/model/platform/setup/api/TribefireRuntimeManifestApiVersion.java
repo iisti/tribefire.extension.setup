@@ -19,7 +19,7 @@ import com.braintribe.model.generic.base.EnumBase;
 import com.braintribe.model.generic.reflection.EnumType;
 import com.braintribe.model.generic.reflection.EnumTypes;
 
-public enum TribefireRuntimeManifestApiVersion implements EnumBase {
+public enum TribefireRuntimeManifestApiVersion implements EnumBase<TribefireRuntimeManifestApiVersion> {
 	v1alpha1,
 	v1;
 
