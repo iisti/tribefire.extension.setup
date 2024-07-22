@@ -1,2 +1,0 @@
-config.sdk.root: ${config.dir}/../../..
-config.sdk.conf: ${config.dir}/../../../conf
