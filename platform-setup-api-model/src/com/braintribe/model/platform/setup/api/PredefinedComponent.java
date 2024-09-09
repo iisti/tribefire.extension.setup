@@ -23,8 +23,7 @@ public enum PredefinedComponent implements EnumBase<PredefinedComponent> {
 	USER_SESSIONS_DB("tribefire-user-sessions-db"),
     USER_SESSION_STATISTICS_DB("tribefire-user-statistics-db"),
     AUTH_DB("tribefire-auth-db"),
-    LOCKING_DB("tribefire-locking-db"),
-    LEADERSHIP_DB("tribefire-leadership-db"),
+    LOCKING_DB("tribefire-locking"),
     TRANSIENT_MESSAGING_DATA_DB("tribefire-transient-messaging-data-db"),
     DCSA_SHARED_STORAGE("tribefire-dcsa-shared-storage"),
 	DEFAULT_DB("tribefire-default-db"),
@@ -37,7 +36,7 @@ public enum PredefinedComponent implements EnumBase<PredefinedComponent> {
 		this.bindId = bindId;
 	}
 
-	private String bindId;
+	private final String bindId;
 
 	@Override
 	public EnumType<PredefinedComponent> type() {
