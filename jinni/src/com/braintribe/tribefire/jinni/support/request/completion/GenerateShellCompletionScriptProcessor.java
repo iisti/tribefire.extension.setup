@@ -58,26 +58,23 @@ import com.braintribe.utils.lcd.StringTools;
  */
 public class GenerateShellCompletionScriptProcessor implements ServiceProcessor<GenerateShellCompletionScript, Neutral> {
 
-	private ModelOracle modelOracle;
-	private ModelMdResolver mdResolver;
 	private JinniCommandsReflection jinniCommandsReflection;
 	private JinniCommandsOverview commandsOverview;
 	private Comparator<GmEntityType> entityComparator_StandardAlias;
 
-	private ModelMdResolver helpMdResolver;
 	private JinniCommandsReflection helpJinniCommandsReflection;
 
 	@Required
 	public void setModelAccessory(ModelAccessory modelAccessory) {
-		this.modelOracle = modelAccessory.getOracle();
-		this.mdResolver = modelAccessory.getMetaData().useCases(USE_CASE_EXECUTION);
+		ModelOracle modelOracle = modelAccessory.getOracle();
+		ModelMdResolver mdResolver = modelAccessory.getMetaData().useCases(USE_CASE_EXECUTION);
+
 		this.jinniCommandsReflection = new JinniCommandsReflection(modelOracle, mdResolver);
 		this.entityComparator_StandardAlias = Comparator.comparing(jinniCommandsReflection::resolveStandardAlias);
-
-		this.helpMdResolver = modelAccessory.getMetaData().useCases(USE_CASE_EXECUTION, USE_CASE_HELP);
-		this.helpJinniCommandsReflection = new JinniCommandsReflection(modelOracle, helpMdResolver);
-
 		this.commandsOverview = jinniCommandsReflection.getCommandsOverview();
+
+		ModelMdResolver helpMdResolver = modelAccessory.getMetaData().useCases(USE_CASE_EXECUTION, USE_CASE_HELP);
+		this.helpJinniCommandsReflection = new JinniCommandsReflection(modelOracle, helpMdResolver);
 	}
 
 	@Override
