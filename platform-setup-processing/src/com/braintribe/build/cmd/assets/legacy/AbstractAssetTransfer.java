@@ -320,7 +320,7 @@ public abstract class AbstractAssetTransfer {
 
 		GetCollaborativeStageData getStageData = GetCollaborativeStageData.T.create();
 		getStageData.setName(asset.getGroupId() + ":" + asset.getName() + "#" + asset.getVersion());
-		getStageData.setServiceId(nature.getAccessId());
+		getStageData.setDomainId(nature.getAccessId());
 
 		CollaborativeStageData data = getStageData.eval(evaluator).get();
 
