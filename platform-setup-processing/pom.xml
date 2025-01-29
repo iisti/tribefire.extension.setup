@@ -159,11 +159,6 @@ limitations under the License.
             <version>${V.com.vladsch.flexmark}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>2.9.5</version>
-        </dependency>
-        <dependency>
             <groupId>tribefire.cortex</groupId>
             <artifactId>model-artifact-deployer</artifactId>
             <version>${V.tribefire.cortex}</version>

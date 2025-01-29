@@ -26,10 +26,9 @@ import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.yaml.snakeyaml.error.YAMLException;
-
-import com.braintribe.codec.marshaller.api.MarshallException;
 import com.braintribe.codec.marshaller.yaml.YamlMarshaller;
+import com.braintribe.gm.model.reason.Maybe;
+import com.braintribe.gm.model.reason.essential.ParseError;
 import com.braintribe.model.asset.PlatformAsset;
 import com.braintribe.model.generic.GMF;
 import com.braintribe.model.generic.GenericEntity;
@@ -125,7 +124,12 @@ public abstract class DocUtils {
 	public static <T extends GenericEntity> T parseYamlFile(File file, EntityType<T> rootType) {
 		YamlMarshaller yamlMarshaller = new YamlMarshaller();
 		try {
-			T parsedEntity = (T) yamlMarshaller.unmarshall(new FileInputStream(file));
+			Maybe<T> maybe = (Maybe<T>) yamlMarshaller.unmarshallReasoned(new FileInputStream(file));
+			
+			if (maybe.isUnsatisfiedBy(ParseError.T))
+				throw new MarkdownParsingException("Invalid Yaml " + file.getPath() + ": " + maybe.whyUnsatisfied().stringify()); 
+			
+			T parsedEntity = maybe.get();
 
 			GmMetaModel docMetadataModel = GMF.getTypeReflection().getModel("tribefire.extension.setup:documentation-metadata-model").getMetaModel();
 			Validator validator = Validator.create(rootType, docMetadataModel);
@@ -135,8 +139,6 @@ public abstract class DocUtils {
 		} catch (ClassCastException e) {
 			throw new MarkdownParsingException("Yaml file does not comply to the expected format. This is either because you didn't declare the root type or because of an unexpected entry: " + file.getPath(),
 					e);
-		} catch (YAMLException | MarshallException e) {
-			throw new MarkdownParsingException("Malformed Yaml file: " + file.getPath(), e);
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(
 					"Tried to parse Yaml file but it does not exist - existance should have been checked before: " + file.getAbsolutePath(), e);

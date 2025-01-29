@@ -42,6 +42,7 @@ import com.braintribe.common.attribute.common.impl.BasicCallerEnvironment;
 import com.braintribe.exception.Exceptions;
 import com.braintribe.gm.model.reason.Maybe;
 import com.braintribe.gm.model.reason.Reason;
+import com.braintribe.gm.model.reason.ReasonException;
 import com.braintribe.logging.Logger;
 import com.braintribe.mime.Mimetype;
 import com.braintribe.mime.Mimetypes;
@@ -144,12 +145,15 @@ public class Jinni {
 			tryExecute(args);
 
 		} catch (Exception e) {
-			logger.error(e);
-
-			if (options != null && options.getVerbose())
-				printFullException(e);
-			else
-				printShortErrorMessage(e);
+			if (e instanceof ReasonException) {
+				ReasonException reasonException = (ReasonException)e;
+				printErrorMessage(reasonException.getReason());
+			} else {
+				if (options != null && options.getVerbose())
+					printFullException(e);
+				else
+					printShortErrorMessage(e);
+			}
 
 			System.out.flush();
 			System.exit(1);
@@ -378,7 +382,7 @@ public class Jinni {
 	}
 	
 	private void printErrorMessage(Reason error) {
-		printErrorMessage(error.stringify());
+		printErrorMessage(error.stringify(options.getVerbose()));
 	}
 	
 	private void printErrorMessage(String msg) {
