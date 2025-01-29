@@ -124,7 +124,7 @@ public abstract class DocUtils {
 	public static <T extends GenericEntity> T parseYamlFile(File file, EntityType<T> rootType) {
 		YamlMarshaller yamlMarshaller = new YamlMarshaller();
 		try {
-			Maybe<T> maybe = (Maybe<T>) yamlMarshaller.unmarshallReasoned(new FileInputStream(file));
+			Maybe<T> maybe = (Maybe<T>)(Maybe<?>) yamlMarshaller.unmarshallReasoned(new FileInputStream(file));
 			
 			if (maybe.isUnsatisfiedBy(ParseError.T))
 				throw new MarkdownParsingException("Invalid Yaml " + file.getPath() + ": " + maybe.whyUnsatisfied().stringify()); 
