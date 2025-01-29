@@ -6,6 +6,7 @@ repositories:
       version: "2.1"
     cachable: true
     changesIndexType: incremental
+    checkSumPolicy: fail
     name: "repo-a"
     password: "myPassword-a"
     updateable: true
@@ -18,6 +19,7 @@ repositories:
       version: "2.2"
     cachable: true
     changesIndexType: incremental
+    checkSumPolicy: fail
     name: "repo-b"
     password: "myPassword-b"
     updateable: true
@@ -26,6 +28,7 @@ repositories:
   - !com.braintribe.devrock.model.repository.MavenHttpRepository
     cachable: true
     changesIndexType: incremental
+    checkSumPolicy: fail
     name: "repo-ab"
     password: "myPassword-ab"
     updateable: true

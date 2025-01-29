@@ -15,6 +15,7 @@ repositories:
           groupId: "tribefire.cortex"
     cachable: true
     changesIndexType: incremental
+    checkSumPolicy: fail
     name: "repo"
     password: "myPassword"
     updateable: true
