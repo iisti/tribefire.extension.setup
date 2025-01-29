@@ -418,7 +418,7 @@ public class HelpProcessor implements ServiceProcessor<Help, Neutral> {
 				.forEach(factoryCommands::append);
 
 		if (Boolean.TRUE.toString().equals(System.getProperty("jinni.legacy.options"))) {
-			println( // 
+			println( //
 					sequence( //
 							yellow("help usage: "), //
 							brightWhite("jinni "), //
@@ -426,11 +426,10 @@ public class HelpProcessor implements ServiceProcessor<Help, Neutral> {
 							cyan("<request>\n\n"), //
 							yellow("available requests:\n"), //
 							commands //
-							) //
-					);
-		}
-		else {
-			
+					) //
+			);
+		} else {
+
 			// @formatter:off
 			ConfigurableConsoleOutputContainer overview = configurableSequence().append(
 				sequence(
@@ -446,26 +445,37 @@ public class HelpProcessor implements ServiceProcessor<Help, Neutral> {
 					cyan("help "),
 					cyan("options\n"),
 					yellow("update jinni by executing: "),
-					cyan("jinni-update")
+					cyan("jinni-update\n"),
+					yellow("environment variable to pass JVM arguments: "),
+					cyan("JINNI_OPTS")
 				)
 			);
 			// @formatter:on
 
+			// @formatter:off
+			overview.append(sequence(
+					text("\n\n"),
+					yellow("Logging:\n"),
+					text("Configure log levels in conf/logging.poperties and specify log output via 'options --log'\n"),
+					yellow("example:"), brightWhite(" jinni"), cyan(" options"), text(" --log"), cyan(" stdout"), text(" :"), cyan(" <command>"), text("... ")
+			));
+			// @formatter:on
+
 			if (factoryCommands.size() > 0 && includeUpToDate) {
 				overview.append(text("\n\n"));
-				overview.append(yellow("factory commands:\n"));
+				overview.append(yellow("factory commands:"));
 				overview.append(factoryCommands);
 			}
 
 			if (commands.size() > 0 && includeUpToDate) {
 				overview.append(text("\n\n"));
-				overview.append(yellow("commands:\n"));
+				overview.append(yellow("commands:"));
 				overview.append(commands);
 			}
 
 			if (deprecatedCommands.size() > 0 && includeDeprecated) {
 				overview.append(text("\n\n"));
-				overview.append(yellow("deprecated commands:\n"));
+				overview.append(yellow("deprecated commands:"));
 				overview.append(deprecatedCommands);
 			}
 
