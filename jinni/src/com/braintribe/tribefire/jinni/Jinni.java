@@ -382,7 +382,8 @@ public class Jinni {
 	}
 	
 	private void printErrorMessage(Reason error) {
-		printErrorMessage(error.stringify(options.getVerbose()));
+		boolean verbose = options == null || options.getVerbose();
+		printErrorMessage(error.stringify(verbose));
 	}
 	
 	private void printErrorMessage(String msg) {
