@@ -21,7 +21,6 @@ import com.braintribe.utils.FileTools;
 import com.braintribe.utils.lcd.StringTools;
 
 import net.lingala.zip4j.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.model.enums.CompressionLevel;
 import net.lingala.zip4j.model.enums.CompressionMethod;
@@ -103,16 +102,15 @@ public class CreateBackupProcessor {
 	}
 
 	private static void zipFolder(File src, File archive) {
-		ZipFile zipFile = new ZipFile(archive);
-
-		ZipParameters parameters = new ZipParameters();
-		parameters.setCompressionMethod(CompressionMethod.DEFLATE);
-		parameters.setCompressionLevel(CompressionLevel.NORMAL);
-		parameters.setIncludeRootFolder(false);
-
-		try {
+		try (ZipFile zipFile = new ZipFile(archive)) {
+			ZipParameters parameters = new ZipParameters();
+			parameters.setCompressionMethod(CompressionMethod.DEFLATE);
+			parameters.setCompressionLevel(CompressionLevel.NORMAL);
+			parameters.setIncludeRootFolder(false);
+	
 			zipFile.addFolder(src, parameters);
-		} catch (ZipException e) {
+
+		} catch (IOException e) {
 			throw new RuntimeException("Failed while zipping " + src.getAbsolutePath() + " in " + archive.getAbsolutePath(), e);
 		}
 	}

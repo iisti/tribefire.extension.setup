@@ -353,15 +353,15 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 //		virtualEnvironment.setEnvironmentOverrides(denotation.getVirtualEnvironmentVariables());
 //		virtualEnvironment.setPropertyOverrides(denotation.getVirtualSystemProperties());
 		
-		println(
-				sequence(
-						text("Resolving setup dependencies for:  "),
-						brightBlack(setupDependency.getGroupId() + ":"),
-						text(setupDependency.getArtifactId()),
-						brightBlack("#"),
-						green(setupDependency.getVersion().asString())
-						)
-				);
+		println( //
+				sequence( //
+						text("Resolving setup dependencies for:  "), //
+						brightBlack(setupDependency.getGroupId() + ":"), //
+						text(setupDependency.getArtifactId()), //
+						brightBlack("#"), //
+						green(setupDependency.getVersion().asString()) //
+				) //
+		);
 		
 		List<CompiledDependencyIdentification> dependencies = new ArrayList<>();
 		
@@ -2166,19 +2166,13 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 		// manage dependencies
 		List<PlatformAssetDependency> projectQualifiedDependencies = project.getQualifiedDependencies();
 
-		denotation.getDependencies() //
-		.stream() //
-		.map(d -> createAssetFromDependencyName(d, false)) //
-		.forEach(d -> {
-			projectQualifiedDependencies.add(d);
-		});
+		denotation.getDependencies().stream() //
+				.map(d -> createAssetFromDependencyName(d, false)) //
+				.forEach(projectQualifiedDependencies::add);
 
-		denotation.getGlobalSetupCandidates() //
-		.stream() //
-		.map(d -> createAssetFromDependencyName(d, true)) //
-		.forEach(d -> {
-			projectQualifiedDependencies.add(d);
-		});
+		denotation.getGlobalSetupCandidates().stream() //
+				.map(d -> createAssetFromDependencyName(d, true)) //
+				.forEach(projectQualifiedDependencies::add);
 
 		// install asset to local repository to make it available
 		File baseFolder;

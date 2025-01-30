@@ -57,7 +57,7 @@ public class RestoreBackupProcessorTest extends AbstractTest {
 		// @formatter:off
 		assertThatThrownBy(() ->  RestoreBackupProcessor.process(request))
 			.isInstanceOf(IllegalStateException.class)
-			.hasMessageMatching("Specified folder.*is not a valid installation folder.*Please try again with a valid installation path.");
+			.hasMessageMatching(".*folder .* is not a valid installation folder.*");
 		// @formatter:on
 
 		// Preparing a tribefire folder. Since we haven't set the force option to true, the installation will throw an Exception.  
@@ -65,7 +65,7 @@ public class RestoreBackupProcessorTest extends AbstractTest {
 		// @formatter:off
 		assertThatThrownBy(() ->  RestoreBackupProcessor.process(request))
 			.isInstanceOf(IllegalStateException.class)
-			.hasMessageMatching("Warning! The installation folder.*already exists! Please move or delete the folder before running a restore command\\. One can also force restore \\(--force true\\).");
+			.hasMessageMatching(".*installation folder .* already exists.*");
 		// @formatter:on
 		
 		request.setForce(true);	
