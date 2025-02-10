@@ -113,7 +113,7 @@ public class JinniConfigHelper {
 			ConsoleConfiguration.install(new PlainSysoutConsole());
 	}
 
-	public static void configureProtocolling(JinniOptions options) {
+	public static boolean configureProtocolling(JinniOptions options) {
 		String protocolTo = options.getProtocol();
 
 		Predicate<Boolean> colored = b -> {
@@ -129,19 +129,17 @@ public class JinniConfigHelper {
 		if (protocolTo != null) {
 			switch (protocolTo) {
 				case OutputChannels.STDOUT:
-					ensureCharsetAndInstallProtocolOutput(System.out, colored.test(AnsiTools.isAnsiStdout()), options);
-					break;
+					return ensureCharsetAndInstallProtocolOutput(System.out, colored.test(AnsiTools.isAnsiStdout()), options);
 				case OutputChannels.STDERR:
-					ensureCharsetAndInstallProtocolOutput(System.err, colored.test(AnsiTools.isAnsiStderr()), options);
-					break;
+					return ensureCharsetAndInstallProtocolOutput(System.err, colored.test(AnsiTools.isAnsiStderr()), options);
 				case OutputChannels.NONE:
 					ConsoleConfiguration.install(VoidConsole.INSTANCE);
-					break;
+					return false;
 				default:
 					checkChannelValue(protocolTo, "protocol");
 
 					try {
-						ensureCharsetAndInstallProtocolOutput(new PrintStream(new FileOutputStream(protocolTo), colored.test(false), "UTF-8"), false,
+						return ensureCharsetAndInstallProtocolOutput(new PrintStream(new FileOutputStream(protocolTo), colored.test(false), "UTF-8"), false,
 								options);
 					} catch (IOException e) {
 						throw new UncheckedIOException(e);
@@ -149,10 +147,11 @@ public class JinniConfigHelper {
 			}
 		} else {
 			ConsoleConfiguration.install(VoidConsole.INSTANCE);
+			return false;
 		}
 	}
 
-	private static void ensureCharsetAndInstallProtocolOutput(PrintStream ps, boolean ansiConsole, JinniOptions options) {
+	private static boolean ensureCharsetAndInstallProtocolOutput(PrintStream ps, boolean ansiConsole, JinniOptions options) {
 		try {
 			if (options.getProtocolCharset() != null) {
 				ps = new PrintStream(ps, false, options.getProtocolCharset());
@@ -169,6 +168,8 @@ public class JinniConfigHelper {
 
 			PrintStreamConsole console = new PrintStreamConsole(ps, ansiConsole);
 			ConsoleConfiguration.install(console);
+			
+			return ansiConsole;
 
 		} catch (UnsupportedEncodingException e) {
 			throw new UncheckedIOException(e);

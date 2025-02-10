@@ -180,7 +180,7 @@ public class Jinni {
 		loadJinniEnvironement();
 
 		JinniConfigHelper.configureLogging(options, installationDir);
-		JinniConfigHelper.configureProtocolling(options);
+		boolean ansi = JinniConfigHelper.configureProtocolling(options);
 
 		executeGeneralTasks();
 
@@ -193,7 +193,7 @@ public class Jinni {
 			return;
 		}
 
-		evalAndHandleResponse();
+		evalAndHandleResponse(ansi);
 
 		maybePrintDone();
 	}
@@ -313,15 +313,15 @@ public class Jinni {
 		jinniContract.alias().createAlias(options.getAlias(), request);
 	}
 
-	private void evalAndHandleResponse() throws IOException {
-		Object value = evalRequest();
+	private void evalAndHandleResponse(boolean ansi) throws IOException {
+		Object value = evalRequest(ansi);
 
 		handleResponse(value);
 	}
 
-	private Object evalRequest() {
+	private Object evalRequest(boolean ansi) {
 		EvalContext<?> evalContext = request.eval(jinniContract.evaluator());
-		evalContext.setAttribute(OutputConfigAspect.class, new BasicOutputConfig(options.getVerbose()));
+		evalContext.setAttribute(OutputConfigAspect.class, new BasicOutputConfig(options.getVerbose(), ansi));
 		evalContext.setAttribute(CallerEnvironment.class, callerEnvironment());
 		evalContext.setAttribute(VirtualEnvironmentAttribute.class, environment);
 
