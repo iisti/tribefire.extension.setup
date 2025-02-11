@@ -116,15 +116,8 @@ public class JinniConfigHelper {
 	public static boolean configureProtocolling(JinniOptions options) {
 		String protocolTo = options.getProtocol();
 
-		Predicate<Boolean> colored = b -> {
-			Boolean mode = options.getColored();
-
-			if (mode == null)
-				return b;
-			else {
-				return mode;
-			}
-		};
+		Boolean mode = options.getColored();
+		Predicate<Boolean> colored = mode == null ? b -> b :  b -> mode;
 
 		if (protocolTo != null) {
 			switch (protocolTo) {
