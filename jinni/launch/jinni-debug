@@ -1,4 +1,4 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-export JINNI_OPTS=-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=y
-"$DIR/jinni"
+export JINNI_OPTS="-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=y"
+"$DIR/jinni" "$@"
