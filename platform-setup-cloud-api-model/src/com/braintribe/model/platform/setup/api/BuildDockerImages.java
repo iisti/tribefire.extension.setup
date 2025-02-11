@@ -57,11 +57,13 @@ public interface BuildDockerImages extends SetupRequest {
 	String getBaseDir();
 	void setBaseDir(String baseDir);
 
-	@Description("The host name of the docker registry to be used, e.g. 'docker.example.org'.")
+	@Description("Optional host name of the docker registry to be used, e.g. 'ghcr.io' for GitHub Container Registry. "
+			+ "Final image name will be '[<dockerRegistryHost>/[<dockerRegistrySubfolder>/]]<name-derived-from-setup>'.")
 	String getDockerRegistryHost();
 	void setDockerRegistryHost(String dockerRegistryHost);
 
-	@Description("Specifies a subfolder on the Docker registry. If set, this is used as prefix for all image names.")
+	@Description("Optional subfolder on the Docker registry, used as prefix for all image names. "
+			+ "Final image name will be '[<dockerRegistryHost>/[<dockerRegistrySubfolder>/]]<name-derived-from-setup>'.")
 	String getDockerRegistrySubfolder();
 	void setDockerRegistrySubfolder(String subfolder);
 

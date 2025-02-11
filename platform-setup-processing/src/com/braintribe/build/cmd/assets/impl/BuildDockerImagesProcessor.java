@@ -8,6 +8,7 @@
 package com.braintribe.build.cmd.assets.impl;
 
 import static com.braintribe.console.ConsoleOutputs.println;
+import static com.braintribe.utils.lcd.StringTools.isEmpty;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -355,10 +356,14 @@ public class BuildDockerImagesProcessor {
 			}
 
 			String _subFolder = request.getDockerRegistrySubfolder();
-			String dockerRegistrySubfolder = _subFolder != null ? "/" + _subFolder : "";
+			String dockerRegistrySubfolder = !isEmpty(_subFolder)? "/" + _subFolder : "";
 			String tag = request.getDockerImageTag();
+			
+			String prefix = dockerRegistryHost.isEmpty() && dockerRegistrySubfolder.isEmpty() //
+					? "" //
+					: dockerRegistryHost + dockerRegistrySubfolder + "/";
 
-			buildContext.fullyQualifiedImageName = dockerRegistryHost + dockerRegistrySubfolder + "/" + imageName + ":" + tag;
+			buildContext.fullyQualifiedImageName = prefix + imageName + ":" + tag;
 		}
 
 		// ************************************************************************************************************
