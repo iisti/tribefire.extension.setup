@@ -58,6 +58,7 @@ import com.braintribe.utils.DateTools;
 import com.braintribe.utils.FileTools;
 import com.braintribe.utils.IOTools;
 import com.braintribe.utils.StringTools;
+import com.braintribe.utils.lcd.NullSafe;
 import com.braintribe.ve.api.VirtualEnvironment;
 import com.braintribe.ve.impl.OverridingEnvironment;
 
@@ -292,9 +293,8 @@ public class BuildDockerImagesProcessor {
 		// used for error message in case of duplicates
 		Map<String, String> imageNamesToContainerNames = new HashMap<>();
 
-		String tribefireBaseDockerRegistryHost = request.getTribefireBaseDockerRegistryHost() != null ? request.getTribefireBaseDockerRegistryHost()
-				: request.getDockerRegistryHost();
-		String dockerRegistryHost = request.getDockerRegistryHost();
+		String dockerRegistryHost = NullSafe.get(request.getDockerRegistryHost(), "");
+		String tribefireBaseDockerRegistryHost = NullSafe.get(request.getTribefireBaseDockerRegistryHost(), dockerRegistryHost);
 
 		for (RuntimeContainerDockerImageBuildContext buildContext : buildContexts) {
 			RuntimeContainer container = buildContext.container;
@@ -354,7 +354,8 @@ public class BuildDockerImagesProcessor {
 								+ " (see option 'shortenImageNames') or set a custom container name via a ContainerProjection asset.");
 			}
 
-			String dockerRegistrySubfolder = request.getDockerRegistrySubfolder() != null ? "/" + request.getDockerRegistrySubfolder() : "";
+			String _subFolder = request.getDockerRegistrySubfolder();
+			String dockerRegistrySubfolder = _subFolder != null ? "/" + _subFolder : "";
 			String tag = request.getDockerImageTag();
 
 			buildContext.fullyQualifiedImageName = dockerRegistryHost + dockerRegistrySubfolder + "/" + imageName + ":" + tag;
