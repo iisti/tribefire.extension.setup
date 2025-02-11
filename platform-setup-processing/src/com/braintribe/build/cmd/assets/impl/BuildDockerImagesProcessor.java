@@ -296,8 +296,6 @@ public class BuildDockerImagesProcessor {
 				: request.getDockerRegistryHost();
 		String dockerRegistryHost = request.getDockerRegistryHost();
 
-		File masterContainerDir = null;
-
 		for (RuntimeContainerDockerImageBuildContext buildContext : buildContexts) {
 			RuntimeContainer container = buildContext.container;
 
@@ -315,10 +313,6 @@ public class BuildDockerImagesProcessor {
 			buildContext.packagedPlatformAsset = CollectionTools.getFirstElement(packagedWebContexts.getAssets());
 
 			buildContext.containerDir = new File(packageDir, container.getPathInPackage());
-
-			if (container.getIsMaster()) {
-				masterContainerDir = buildContext.containerDir;
-			}
 
 			if (!buildContext.containerDir.exists()) {
 				throw new IllegalStateException("Container directory " + buildContext.containerDir.getAbsolutePath() + " for container "
@@ -853,7 +847,7 @@ public class BuildDockerImagesProcessor {
 	}
 
 	private static String baseDirRelativePath(BuildDockerImages request, String baseDirSubPath) {
-		String baseDirPrefix = request.getBaseDir() + "/";
+		String baseDirPrefix = request.getBaseDir() + File.separator;
 		if (!baseDirSubPath.startsWith(baseDirPrefix)) {
 			throw new IllegalStateException("Cannot get base dir relative path for '" + baseDirSubPath
 					+ "', since the path string (unexpectedly) does not start with path '" + baseDirPrefix + "'!");
