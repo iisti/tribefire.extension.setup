@@ -43,7 +43,6 @@ import com.braintribe.exception.Exceptions;
 import com.braintribe.gm.model.reason.Maybe;
 import com.braintribe.gm.model.reason.Reason;
 import com.braintribe.gm.model.reason.ReasonException;
-import com.braintribe.logging.Logger;
 import com.braintribe.mime.Mimetype;
 import com.braintribe.mime.Mimetypes;
 import com.braintribe.model.generic.eval.EvalContext;
@@ -65,6 +64,7 @@ import com.braintribe.tribefire.jinni.cmdline.impl.PosixCommandLineParser;
 import com.braintribe.tribefire.jinni.helpers.FromResolver;
 import com.braintribe.tribefire.jinni.helpers.JinniConfigHelper;
 import com.braintribe.tribefire.jinni.helpers.JinniEntityFactory;
+import com.braintribe.tribefire.jinni.helpers.JinniProxyLoggingHelper;
 import com.braintribe.tribefire.jinni.helpers.OutputProvider;
 import com.braintribe.tribefire.jinni.support.VersionSupplier;
 import com.braintribe.tribefire.jinni.wire.JinniWireModule;
@@ -86,10 +86,9 @@ import com.braintribe.wire.api.context.WireContext;
  * <li>{@link VirtualEnvironmentAttribute}
  * </ul>
  * 
- * See {@link #evalRequest()}
+ * See {@link #evalRequest}
  */
 public class Jinni {
-	private static Logger logger = Logger.getLogger(Jinni.class);
 
 	private final File installationDir;
 	private final File confDir;
@@ -107,6 +106,8 @@ public class Jinni {
 
 		// until configuration of the protocol use standard ansi console as protocol
 		JinniConfigHelper.configureDefaultProtocolling();
+
+		JinniProxyLoggingHelper.logProxyInfo();
 
 		new Jinni().execute(args);
 	}
@@ -146,7 +147,7 @@ public class Jinni {
 
 		} catch (Exception e) {
 			if (e instanceof ReasonException) {
-				ReasonException reasonException = (ReasonException)e;
+				ReasonException reasonException = (ReasonException) e;
 				printErrorMessage(reasonException.getReason());
 			} else {
 				if (options != null && options.getVerbose())
@@ -169,7 +170,7 @@ public class Jinni {
 
 	private void tryExecute(String[] args) throws IOException {
 		Reason error = loadRequestAndOptions(args);
-		
+
 		if (error != null) {
 			printErrorMessage(error);
 			return;
@@ -200,15 +201,15 @@ public class Jinni {
 
 	private Reason loadRequestAndOptions(String[] args) {
 		Maybe<ParsedCommandLine> commandLineMaybe = parseCommand(args);
-		
+
 		if (commandLineMaybe.isUnsatisfied())
 			return commandLineMaybe.whyUnsatisfied();
-		
+
 		ParsedCommandLine commandLine = commandLineMaybe.get();
-		
+
 		options = commandLine.acquireInstance(JinniOptions.T);
 		request = commandLine.findInstance(ServiceRequest.T).orElseGet(Introduce.T::create);
-		
+
 		return null;
 	}
 
@@ -380,16 +381,15 @@ public class Jinni {
 	private void printShortErrorMessage(Exception e) {
 		printErrorMessage(getErrorMessage(e));
 	}
-	
+
 	private void printErrorMessage(Reason error) {
 		boolean verbose = options == null || options.getVerbose();
 		printErrorMessage(error.stringify(verbose));
 	}
-	
+
 	private void printErrorMessage(String msg) {
 		println(sequence(brightRed("\nERROR: "), text(msg)));
 	}
-	
 
 	private static String getErrorMessage(Throwable e) {
 		String message = e.getMessage();
