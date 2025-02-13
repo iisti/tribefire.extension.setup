@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.velocity.shaded.commons.io.FilenameUtils;
-
 import com.braintribe.cfg.Required;
 import com.braintribe.codec.marshaller.api.GmSerializationOptions;
 import com.braintribe.codec.marshaller.api.MarshallException;
@@ -167,15 +165,20 @@ public class JinniAlias extends RequestPersistenceManipulator {
 	}
 
 	private Map.Entry<String, Path> getAliasFromFile(Path path) {
-
 		try {
-			return new AbstractMap.SimpleEntry<String, Path>(FilenameUtils.removeExtension(path.getFileName().toString()), path);
+			return new AbstractMap.SimpleEntry<String, Path>(removeExtension(path.getFileName().toString()), path);
+
 		} catch (MarshallException mex) {
 			LOG.error("Error when reading alias. ", mex);
 			throw new IllegalStateException(
 					"Alias folder " + getDirectory().toAbsolutePath() + "contains invalid entries. Purge is suggested. Cause: " + mex.getMessage(),
 					mex);
 		}
+	}
+
+	private String removeExtension(String s) {
+		int i = s.lastIndexOf(".");
+		return i < 0 ? s : s.substring(0, i);
 	}
 
 	@Override
