@@ -18,6 +18,7 @@ public class JinniProxyLoggingHelper {
 		logProxyPropertyIfPresent("https.proxyPort");
 		logProxyPropertyIfPresent("socksProxyHost");
 		logProxyPropertyIfPresent("socksProxyPort");
+		logProxyPropertyIfPresent("http.nonProxyHosts");
 
 		if (proxyProps == 0)
 			log.debug("Proxy not configured for this JVM.");
