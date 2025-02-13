@@ -24,4 +24,4 @@ else
     exit 1
 fi
 
-"$JAVA_EXECUTABLE" $JINNI_OPTS -Djinni.installationDir="$INST_DIR" -Dgm.ownCl=true -jar "$LIB_PATH/launch.jar" "$@"
+"$JAVA_EXECUTABLE" $JINNI_OPTS -Djinni.installationDir="$INST_DIR" -Djava.net.useSystemProxies=true -jar "$LIB_PATH/launch.jar" "$@"

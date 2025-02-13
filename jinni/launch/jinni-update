@@ -15,7 +15,7 @@ else
 fi
 
 echo "Checking for update:"
-"$JAVA_EXECUTABLE" -Djinni.suppressDone=true -Djinni.installationDir="$INST_DIR" -Dgm.ownCl=true -jar "$INST_DIR/lib/launch.jar" update-jinni "$@"
+"$JAVA_EXECUTABLE" -Djinni.suppressDone=true -Djinni.installationDir="$INST_DIR" -Djava.net.useSystemProxies=true -jar "$INST_DIR/lib/launch.jar" update-jinni "$@"
 
 rc=$?
 if [ $rc -ne 0 ]; then exit $rc; fi

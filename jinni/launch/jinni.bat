@@ -23,6 +23,6 @@ if exist "%PRIVATE_LIB_PATH%" (
     )
 )
 
-%JAVA_EXECUTABLE% %JINNI_OPTS% -Djinni.installationDir="%~dp0..\\" -Dgm.ownCl=true -jar "%LIB_PATH%\launch.jar" %*
+%JAVA_EXECUTABLE% %JINNI_OPTS% -Djinni.installationDir="%~dp0..\\" -Djava.net.useSystemProxies=true -jar "%LIB_PATH%\launch.jar" %*
 
 endlocal

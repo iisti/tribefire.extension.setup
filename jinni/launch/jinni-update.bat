@@ -13,7 +13,7 @@ if "%JAVA_HOME%"=="" (
 
 rem download jinni to jinni-update sub folder
 echo Checking for update:
-%JAVA_EXECUTABLE% -Djinni.suppressDone=true -Djinni.installationDir=%JINNI_INSTALLATION_PATH% -Dgm.ownCl=true -jar "%LIBS%\launch.jar" update-jinni %*
+%JAVA_EXECUTABLE% -Djinni.suppressDone=true -Djinni.installationDir=%JINNI_INSTALLATION_PATH% -Djava.net.useSystemProxies=true -jar "%LIBS%\launch.jar" update-jinni %*
 
 IF %ERRORLEVEL% neq 0 (
     exit /B %ERRORLEVEL%; 
