@@ -157,9 +157,6 @@ public class UpdateGroupVersionProcessorTest extends AbstractTest {
 				.hasMessageContaining("pom.xml is not a valid XML") // message part including file name
 				.hasMessageContaining("--- not a valid POM ---"); // file content
 
-		assertThatExecuting(() -> UpdateGroupVersionProcessor.validateGroupFolder(gf("missing-group-build-script"))).fails()
-				.withUncheckedExceptionWhich().hasMessageContaining("build.xml not found!");
-
 		assertThatExecuting(() -> UpdateGroupVersionProcessor.validateGroupFolder(gf("missing-parent-folder"))).fails().withUncheckedExceptionWhich()
 				.hasMessageContaining("parent not found!");
 

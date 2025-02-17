@@ -432,7 +432,7 @@ public class UpdateGroupVersionProcessor {
 		}
 
 		// ... and it contains expected files ...
-		List<String> expectedFilePaths = CollectionTools.getList("build.xml", "parent", "parent/pom.xml", "parent/build.xml");
+		List<String> expectedFilePaths = CollectionTools.getList("parent", "parent/pom.xml", "parent/build.xml");
 		for (String expectedFilePath : expectedFilePaths) {
 			File expectedFile = new File(artifactGroupFolder, expectedFilePath);
 			if (!expectedFile.exists()) {
