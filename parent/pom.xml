@@ -51,7 +51,7 @@ limitations under the License.
         <V.org.apache.velocity>2.1</V.org.apache.velocity>
         <V.org.freemarker>2.3.28</V.org.freemarker>
         <V.org.graalvm.js>20.2.0</V.org.graalvm.js>
-        <V.com.fasterxml.jackson.core>2.13.3</V.com.fasterxml.jackson.core>
+        <V.com.fasterxml.jackson.core>2.18.2</V.com.fasterxml.jackson.core>
         <V.com.vladsch.flexmark>0.34.18</V.com.vladsch.flexmark>
     </properties>
     <licenses>
