@@ -71,6 +71,7 @@ public class RepositoryRule extends AbstractTest implements HasOverrideableVirtu
 		overrideableVirtualEnvironment.setEnv(PORT, Integer.toString(launcher.getAssignedPort()));
 		String mavenRepoPath = newTempDir(clazz.getSimpleName() + "_" + DateTools.getTimestampNumber()).getAbsolutePath();
 		overrideableVirtualEnvironment.setEnv(M2_REPO, mavenRepoPath);
+		overrideableVirtualEnvironment.setEnv("DEVROCK_REPOSITORY_CONFIGURATION", "");
 		overrideableVirtualEnvironment.setEnv(ARTIFACT_REPOSITORIES_EXCLUSIVE_SETTINGS,
 				AbstractTest.testFile(clazz, "settings.xml").getAbsolutePath());
 

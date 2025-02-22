@@ -45,22 +45,22 @@ public class LockVersionsProcessorTest extends AbstractTest {
 		LockVersions request = LockVersions.T.create();
 		// @formatter:off
 		request.getTerminalArtifacts().addAll(CollectionTools.getList(
-			"com.braintribe.gm:a1#1.0",
-			"com.braintribe.gm:a3#1.1.3"
+			"test.gm:a1#1.0",
+			"test.gm:a3#1.1.3"
 		));
 
 		LockArtifactFilter filter = LockVersionsProcessor.resolveSolutionsAndCreateLockFilter(request, repositoryRule.getOverrideableVirtualEnvironment());
 		List<String> expectedLocks = CollectionTools.getList(
-			"com.braintribe.gm:parent#1.0.1",
-			"com.braintribe.gm:parent#1.1.1",
-			"com.braintribe.gm:a1#1.0.2",
-			"com.braintribe.gm:a2#1.0.3",
-			"com.braintribe.gm:a3#1.1.3",
-			"tribefire.cortex:parent#2.0.2",
-			"tribefire.cortex:parent#2.1.100",
-			"tribefire.cortex:b1#2.0.13",
-			"tribefire.cortex:b1#2.1.11",
-			"tribefire.cortex:b2#2.0.5"
+			"test.gm:parent#1.0.1",
+			"test.gm:parent#1.1.1",
+			"test.gm:a1#1.0.2",
+			"test.gm:a2#1.0.3",
+			"test.gm:a3#1.1.3",
+			"test.cortex:parent#2.0.2",
+			"test.cortex:parent#2.1.100",
+			"test.cortex:b1#2.0.13",
+			"test.cortex:b1#2.1.11",
+			"test.cortex:b2#2.0.5"
 		);
 		// @formatter:on
 		assertThat(filter.getLocks()).containsExactlyInAnyOrderElementsOf(expectedLocks);
@@ -71,17 +71,17 @@ public class LockVersionsProcessorTest extends AbstractTest {
 		System.out.println("Check the visualization of the use case if needed: "
 				+ testFile("lock-versions-with-repository-configuration-use-case.png").getAbsolutePath());
 		LockVersions request = LockVersions.T.create();
-		request.getTerminalArtifacts().add("com.braintribe.gm:a4#1.1");
+		request.getTerminalArtifacts().add("test.gm:a4#1.1");
 
 		LockArtifactFilter filter = LockVersionsProcessor.resolveSolutionsAndCreateLockFilter(request,
 				repositoryRule.getOverrideableVirtualEnvironment());
 
 		// @formatter:off
 		List<String> expectedLocks = CollectionTools.getList(
-			"com.braintribe.gm:parent#1.1.1",
-			"com.braintribe.gm:a4#1.1.4",
-			"tribefire.cortex:parent#2.2.200",
-			"tribefire.cortex:b1#2.2.21"
+			"test.gm:parent#1.1.1",
+			"test.gm:a4#1.1.4",
+			"test.cortex:parent#2.2.200",
+			"test.cortex:b1#2.2.21"
 
 		);
 		// @formatter:on
@@ -94,7 +94,7 @@ public class LockVersionsProcessorTest extends AbstractTest {
 				+ testFile("lock-versions-with-repository-configuration-use-case.png").getAbsolutePath());
 
 		LockVersions request = LockVersions.T.create();
-		request.getTerminalArtifacts().add("com.braintribe.gm:a4#1.1");
+		request.getTerminalArtifacts().add("test.gm:a4#1.1");
 
 		// we need to copy OverrideableVirtualEnvironment since the repositoryRule is shared between all class's tests
 		OverridingEnvironment overrideableVirtualEnvironment = repositoryRule.copyOverrideableVirtualEnvironment();
@@ -102,17 +102,17 @@ public class LockVersionsProcessorTest extends AbstractTest {
 		overrideableVirtualEnvironment.setEnv("DEVROCK_REPOSITORY_CONFIGURATION", repositoryConfigurationPath);
 		LockArtifactFilter filter = LockVersionsProcessor.resolveSolutionsAndCreateLockFilter(request, overrideableVirtualEnvironment);
 
-		// a4#1.1 has a dependency of tf artifacts with range [2,3)
-		// in testRangedDependency() it resolves to tf.cortex:b1#2.2
+		// a4#1.1 has a dependency of cortex artifacts with range [2,3)
+		// in testRangedDependency() it resolves to test.cortex:b1#2.2
 		// In this test we filter the repo for tf.cortex to only consider [2.1,2.2)
 
 		// @formatter:off
 		List<String> expectedLocks = CollectionTools.getList(
-			"com.braintribe.gm:parent#1.1.1",
-			"com.braintribe.gm:a4#1.1.4",
-			"tribefire.cortex:parent#2.1.100",
-			"tribefire.cortex:b1#2.1.11",
-			"tribefire.cortex:b2#2.1.4"
+			"test.gm:parent#1.1.1",
+			"test.gm:a4#1.1.4",
+			"test.cortex:parent#2.1.100",
+			"test.cortex:b1#2.1.11",
+			"test.cortex:b2#2.1.4"
 		);
 		// @formatter:on
 
