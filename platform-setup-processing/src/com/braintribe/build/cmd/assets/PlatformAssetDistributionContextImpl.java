@@ -37,6 +37,7 @@ import com.braintribe.model.artifact.consumable.Part;
 import com.braintribe.model.asset.PlatformAsset;
 import com.braintribe.model.asset.natures.PlatformAssetNature;
 import com.braintribe.model.platform.setup.api.PlatformSetupConfig;
+import com.braintribe.model.processing.service.api.OutputConfig;
 import com.braintribe.model.processing.service.api.ServiceRequestContext;
 import com.braintribe.model.processing.session.api.managed.ManagedGmSession;
 import com.braintribe.model.resource.FileResource;
@@ -67,12 +68,14 @@ public class PlatformAssetDistributionContextImpl implements PlatformAssetBuilde
 	
 	private final MapAttributeContext attributeContext = new MapAttributeContext();
 
-	public PlatformAssetDistributionContextImpl(ServiceRequestContext requestContext, PlatformSetupConfig request,
-			VirtualEnvironment virtualEnvironment,
-			PlatformAssetStorageRecording platformAssetStorageRecording,
-			ArtifactResolutionContext artifactResolutionContext,
-			File packageBaseDir,
-			PackagedPlatformSetupBuilder packagedPlatformSetupBuilder, boolean doVerboseOutput) {
+	public PlatformAssetDistributionContextImpl( //
+			ServiceRequestContext requestContext, PlatformSetupConfig request, //
+			VirtualEnvironment virtualEnvironment, //
+			PlatformAssetStorageRecording platformAssetStorageRecording, //
+			ArtifactResolutionContext artifactResolutionContext, //
+			File packageBaseDir, //
+			PackagedPlatformSetupBuilder packagedPlatformSetupBuilder, //
+			OutputConfig outConfig) {
 
 		this.requestContext = requestContext;
 		this.request = request;
@@ -81,18 +84,18 @@ public class PlatformAssetDistributionContextImpl implements PlatformAssetBuilde
 		this.packageBaseDir = packageBaseDir;
 		this.virtualEnvironment = virtualEnvironment;
 		this.packagedPlatformSetupBuilder = packagedPlatformSetupBuilder;
-		this.doVerboseOutput = doVerboseOutput;
+		this.outConfig = outConfig;
 	}
 	
 	private final VirtualEnvironment virtualEnvironment;
 	private final Map<Class<?>, Object> customData = new IdentityHashMap<>();
-	private final boolean doVerboseOutput;
-	
+	private final OutputConfig outConfig;
+
 	@Override
-	public boolean doVerboseOutput() {
-		return doVerboseOutput;
+	public OutputConfig outConfig() {
+		return outConfig;
 	}
-	
+
 	@Override
 	public PackagedPlatformSetupBuilder getPackagedPlatformSetupBuilder() {
 		return packagedPlatformSetupBuilder;

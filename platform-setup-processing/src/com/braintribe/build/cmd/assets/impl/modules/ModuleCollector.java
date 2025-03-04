@@ -210,7 +210,7 @@ public class ModuleCollector implements PlatformAssetCollector, PlatformAssetDis
 			libraryAssets.addAll(modelAssets);
 
 			return new TfsContext(tfWebPlatformAsset, moduleAssets, modelAssets, libraryAssets, context.artifactResolutionContext(),
-					newClasspathOptimizer(), preProcessClasspaths, context.doVerboseOutput());
+					newClasspathOptimizer(), preProcessClasspaths, context.outConfig());
 		}
 
 		private TfsClasspathOptimizer newClasspathOptimizer() {

@@ -49,6 +49,8 @@ import com.braintribe.gm.model.reason.Maybe;
 import com.braintribe.model.artifact.analysis.AnalysisArtifact;
 import com.braintribe.model.asset.PlatformAsset;
 import com.braintribe.model.asset.natures.TribefireModule;
+import com.braintribe.model.processing.service.api.OutputConfig;
+import com.braintribe.model.processing.service.impl.BasicOutputConfig;
 import com.braintribe.setup.tools.GmNature;
 import com.braintribe.setup.tools.impl.RepoContentBuilder;
 import com.braintribe.setup.tools.impl.RepoContext;
@@ -149,7 +151,8 @@ public abstract class AbstractTfSetupResolverTest implements ArtifactNames {
 	}
 
 	private TfsContext newTfsContext(ArtifactResolutionContext resolutionContext) {
-		return new TfsContext(tfContainerAsset, moduleAssets, modelAssets, libraryAssets, resolutionContext, newSolutionOptimizer(), false, verbose);
+		OutputConfig outConfig = new BasicOutputConfig(verbose, false);
+		return new TfsContext(tfContainerAsset, moduleAssets, modelAssets, libraryAssets, resolutionContext, newSolutionOptimizer(), false, outConfig);
 	}
 
 	protected TfsClasspathOptimizer newSolutionOptimizer() {

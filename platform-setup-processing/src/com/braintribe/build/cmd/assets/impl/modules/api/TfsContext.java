@@ -20,6 +20,7 @@ import com.braintribe.build.cmd.assets.api.ArtifactResolutionContext;
 import com.braintribe.model.artifact.analysis.AnalysisArtifact;
 import com.braintribe.model.asset.PlatformAsset;
 import com.braintribe.model.asset.natures.TribefireModule;
+import com.braintribe.model.processing.service.api.OutputConfig;
 
 /**
  * @author peter.gazdik
@@ -34,6 +35,7 @@ public class TfsContext {
 	public final TfsClasspathOptimizer classpathOptimizer;
 	public final boolean preProcessClasspaths;
 	public final boolean verbose;
+	public final boolean dynamic;
 
 	public final TfsSolutionOracle solutionOracle = new TfsSolutionOracle();
 
@@ -47,7 +49,7 @@ public class TfsContext {
 			List<PlatformAsset> libraryAssets, //
 			ArtifactResolutionContext resolutionContext, //
 			TfsClasspathOptimizer classpathOptimizer, //
-			boolean preProcessClasspaths, boolean verbose) {
+			boolean preProcessClasspaths, OutputConfig outConfig) {
 
 		this.tfPlatformAsset = tfPlatformAsset;
 		this.moduleAssets = moduleAssets;
@@ -56,7 +58,8 @@ public class TfsContext {
 		this.resolutionContext = resolutionContext;
 		this.classpathOptimizer = classpathOptimizer;
 		this.preProcessClasspaths = preProcessClasspaths;
-		this.verbose = verbose;
+		this.verbose = outConfig.verbose();
+		this.dynamic = outConfig.dynamic();
 
 		this.forbiddenDepPatterns = computeForbiddenDepChecking();
 	}

@@ -87,7 +87,7 @@ public class TfSetupResolver {
 
 		AttributeContexts.push(attributeContext);
 
-		try (DownloadMonitor downloadMonitor = new DownloadMonitor(eventHub)) {
+		try (DownloadMonitor downloadMonitor = new DownloadMonitor(eventHub, false, 0, context.dynamic)) {
 			downloadMonitor.setIndent(8);
 			downloadMonitor.setInitialLinebreak(true);
 

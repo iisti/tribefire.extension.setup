@@ -302,7 +302,7 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 		dispatching.register(CreateBackup.T,                         (c, r) -> createBackup(r));
 		dispatching.register(RestoreBackup.T,                        (c, r) -> restoreBackup(r));
 		dispatching.register(Encrypt.T,                              (c, r) -> encrypt(r));
-		dispatching.register(GetAssetDependencies.T,                 (c, r) -> getAssetDependencies(r));
+		dispatching.register(GetAssetDependencies.T,                 (c, r) -> getAssetDependencies(c, r));
 		dispatching.register(SetupRepositoryConfiguration.T,         (c, r) -> setupRepositoryConfiguration(r));
 		dispatching.register(GetLockedVersions.T,                    (c, r) -> getLockedVersions(r));
 		dispatching.register(BackupArtifacts.T,                      (c, r) -> backupArtifacts(r));
@@ -313,15 +313,17 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 		// @formatter:on
 	}
 	
-	private Object getAssetDependencies(GetAssetDependencies denotation) {
+	private Object getAssetDependencies(ServiceRequestContext requestCtx, GetAssetDependencies denotation) {
 		SimplePlatformAssetResolutionContext context = new SimplePlatformAssetResolutionContext(virtualEnvironment, denotation);
 		try (WireContext<ArtifactResolutionContract> arContext = Wire.context(new ArtifactResolutionWireModule(virtualEnvironment, false))) {
-			resolveSetupDependency(context, arContext.contract(), denotation);
+			resolveSetupDependency(context, arContext.contract(), requestCtx, denotation);
 			return null;
 		}
 	}
 	
-	private Pair<RepositoryViewResolution, SortedSet<PlatformAssetSolution>> resolveSetupDependency(PlatformAssetResolvingContext context, ArtifactResolutionContext arContext,
+	private Pair<RepositoryViewResolution, SortedSet<PlatformAssetSolution>> resolveSetupDependency( //
+			PlatformAssetResolvingContext context, ArtifactResolutionContext arContext, //
+			ServiceRequestContext requestContext,
 			SetupDependencyConfig denotation) {
 
 		String setupDependencyAsStr = denotation.getSetupDependency();
@@ -372,6 +374,8 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 
 		dependencies.add(setupDependency);
 
+		OutputConfig outConfig = requestContext.getAspect(OutputConfigAspect.class, OutputConfig.empty);
+		
 		AssetResolutionContext assetDepContext = AssetResolutionContext.build() //
 				.natureParts(natureParts) //
 				.selectorFiltering(true) //
@@ -382,6 +386,8 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 				.stage(context.getStage()) //
 				.lenient(true) //
 				.session(context.session()) //
+				.verboseOutput(outConfig.verbose()) //
+				.dynamicOutput(outConfig.dynamic()) //
 				.done();
 
 		AssetDependencyResolver assetDepResolver = arContext.assetDependencyResolver();
@@ -1886,15 +1892,16 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 
 		
 		// get output configuration specification from denotation type
-		boolean verbose = requestContext.getAspect(OutputConfigAspect.class, OutputConfig.empty).verbose();
-		
+		OutputConfig outConfig = requestContext.getAspect(OutputConfigAspect.class, OutputConfig.empty);
+
 		PlatformAssetStorageRecorder recorder = new PlatformAssetStorageRecorder();
 
-
-		PlatformAssetDistributionContextImpl context = new PlatformAssetDistributionContextImpl(requestContext, denotation, virtualEnvironment,
-				recorder, artifactResolution, packageBaseDir, packagedPlatformSetupBuilder, verbose);
+		PlatformAssetDistributionContextImpl context = new PlatformAssetDistributionContextImpl( //
+				requestContext, denotation, virtualEnvironment, //
+				recorder, artifactResolution, packageBaseDir, packagedPlatformSetupBuilder, //
+				outConfig);
 		
-		Pair<RepositoryViewResolution, SortedSet<PlatformAssetSolution>> resolutionResult = resolveSetupDependency(context, artifactResolution, denotation);
+		Pair<RepositoryViewResolution, SortedSet<PlatformAssetSolution>> resolutionResult = resolveSetupDependency(context, artifactResolution, requestContext, denotation);
 		RepositoryViewResolution repositoryViewResolution = resolutionResult.first();
 		SortedSet<PlatformAssetSolution> solutions = resolutionResult.second();
 

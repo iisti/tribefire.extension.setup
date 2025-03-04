@@ -65,7 +65,7 @@ public class MarkdownDocumentionCompiler implements PlatformAssetCollector, Plat
 				.map(JavadocCollector::getJavadocMerger) //
 				.orElse(null);
 
-		MarkdownCompiler.compile(sourcesFolder, mdocDir, toBeCompiled.keySet(), context.doVerboseOutput(), data, javadocMerger);
+		MarkdownCompiler.compile(sourcesFolder, mdocDir, toBeCompiled.keySet(), context.outConfig().verbose(), data, javadocMerger);
 	}
 
 	@Override

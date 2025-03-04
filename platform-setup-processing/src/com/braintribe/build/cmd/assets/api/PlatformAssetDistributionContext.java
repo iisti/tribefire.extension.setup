@@ -17,6 +17,7 @@ import com.braintribe.build.cmd.assets.impl.PackagedPlatformSetupBuilder;
 import com.braintribe.common.attribute.MutableTypeSafeAttributes;
 import com.braintribe.model.asset.PlatformAsset;
 import com.braintribe.model.platform.setup.api.PlatformSetupConfig;
+import com.braintribe.model.processing.service.api.OutputConfig;
 import com.braintribe.model.processing.service.api.ServiceRequestContext;
 import com.braintribe.utils.FileTools;
 import com.braintribe.utils.paths.PathList;
@@ -33,7 +34,7 @@ public interface PlatformAssetDistributionContext extends PlatformAssetResolving
 	
 	PackagedPlatformSetupBuilder getPackagedPlatformSetupBuilder();
 	
-	boolean doVerboseOutput();
+	OutputConfig outConfig();
 	
 	ServiceRequestContext requestContext(); 
 	PlatformSetupConfig request();
