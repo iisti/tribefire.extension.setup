@@ -69,7 +69,7 @@ RUN echo "****************************************************" &&\
     echo "****************************************************"
 
 ## move relevant paths to a temporary location from where they will (at startup) be copied to a writable folder
-RUN /entrypoint/prepare-for-ready-only-root-file-system && rm /entrypoint/prepare-for-ready-only-root-file-system
+RUN /entrypoint/prepare-for-read-only-root-file-system && rm /entrypoint/prepare-for-read-only-root-file-system
 
 #if ( !${enableRootPermissions} )
 USER 1001
