@@ -23,10 +23,14 @@ done
 
 # for each path, move path to temporary folder and then create symlink at original location pointing to final folder
 for path in \
+	/home \
 	/opt/tribefire \
+	/run \
 	/tmp \
 	/usr/share/fonts \
+	/var/lib \
 	/var/log \
+	/var/run \
 	/var/tmp
 do
 	# set target paths
