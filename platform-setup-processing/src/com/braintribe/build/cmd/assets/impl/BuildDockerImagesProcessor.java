@@ -162,6 +162,10 @@ public class BuildDockerImagesProcessor {
 	// (tribefire-2-3-15 uses OpenJDK 23 in Docker images)
 	@SuppressWarnings("unused") // no version specific processor code required
 	private static final String DOCKER_RESOURCES_VERSION__2_0_274 = "2.0.274";
+	// support read-only root file system
+	@SuppressWarnings("unused") // no version specific processor code required
+	private static final String DOCKER_RESOURCES_VERSION__2_0_275 = "2.0.275";
+
 
 	private static final Logger logger = Logger.getLogger(BuildDockerImagesProcessor.class);
 
@@ -358,7 +362,7 @@ public class BuildDockerImagesProcessor {
 			String _subFolder = request.getDockerRegistrySubfolder();
 			String dockerRegistrySubfolder = !isEmpty(_subFolder)? "/" + _subFolder : "";
 			String tag = request.getDockerImageTag();
-			
+
 			String prefix = dockerRegistryHost.isEmpty() && dockerRegistrySubfolder.isEmpty() //
 					? "" //
 					: dockerRegistryHost + dockerRegistrySubfolder + "/";
