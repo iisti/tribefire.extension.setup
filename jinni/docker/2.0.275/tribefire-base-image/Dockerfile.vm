@@ -87,20 +87,22 @@ COPY logging/json-logging.properties /opt/tribefire/runtime/host/conf/
 ## default log level
 ENV TRIBEFIRE_RUNTIME_LOGLEVEL FINE
 
+### Entrypoint ################################################################
+COPY entrypoint/ /entrypoint/
+RUN chmod ug+rx /entrypoint/entrypoint /entrypoint/copy-to-writable-folder /entrypoint/prepare-for-ready-only-root-file-system
+
+ENTRYPOINT ["/entrypoint/entrypoint"]
 
 ### Startup ###################################################################
 COPY startup/ /opt/tribefire/startup/
-RUN chmod ug+rx /opt/tribefire/startup/startup-wrapper.sh /opt/tribefire/startup/uid-entrypoint
+RUN chmod ug+rx /opt/tribefire/startup/startup-wrapper
 
-ENTRYPOINT ["/opt/tribefire/startup/uid-entrypoint"]
-CMD [ "bash", "/opt/tribefire/startup/startup-wrapper.sh" ]
-
-WORKDIR /opt/tribefire/startup/
-
+CMD [ "bash", "/opt/tribefire/startup/startup-wrapper" ]
+WORKDIR /
 
 ### Permissions ###############################################################
-RUN chgrp -R 0 /opt/tribefire /etc/passwd /home/ &&\
-    chmod -R g=u /opt/tribefire /etc/passwd /home/ &&\
+RUN chgrp -R 0 /opt/tribefire /home/ &&\
+    chmod -R g=u /opt/tribefire /home/ &&\
     chmod -R ug+rw /opt/tribefire/
 ## add write permission to fonts folder. we do this to support adding new fonts,
 ## e.g. via custom entry point, without requiring root permissions.

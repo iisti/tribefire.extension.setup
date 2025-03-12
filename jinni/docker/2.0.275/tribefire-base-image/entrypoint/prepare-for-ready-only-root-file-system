@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -e
+
+temporaryTargetBaseFolder='/to-be-writable'
+finalTargetBaseFolder='/writable'
+
+# prepare base folders
+mkdir -p "${temporaryTargetBaseFolder}"
+chmod 755 "${temporaryTargetBaseFolder}"
+
+mkdir -p "${finalTargetBaseFolder}"
+chmod 775 "${finalTargetBaseFolder}"
+
+# for each folder, clean all folder content but keep the folder itself
+for folder in \
+	/tmp \
+	/var/log \
+	/var/tmp
+do
+	find "${folder}" -mindepth 1 -exec rm -rf {} +
+done
+
+# for each path, move path to temporary folder and then create symlink at original location pointing to final folder
+for path in \
+	/opt/tribefire \
+	/tmp \
+	/usr/share/fonts \
+	/var/log \
+	/var/tmp
+do
+	# set target paths
+	temporaryTarget="${temporaryTargetBaseFolder}${path}"
+	finalTarget="${finalTargetBaseFolder}${path}"
+
+	# create parent directories in case they don't exist
+	mkdir -p "$(dirname "${temporaryTarget}")"
+
+	# move to temporary target
+	mv "${path}" "${temporaryTarget}"
+
+	# create symlink pointing to final target
+	ln -s "${finalTarget}" "${path}"
+done

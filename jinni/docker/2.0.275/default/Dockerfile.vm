@@ -49,11 +49,12 @@ RUN chmod -R g=u /home/
 
 #if ( !${enableRootPermissions} )
 RUN chmod -R ug+rw /opt/tribefire/
-USER 1001
+## see https://docs.openshift.com/container-platform/3.3/creating_images/guidelines.html
+RUN echo "default:x:1001:0:default user:/home/:/sbin/nologin" >> /etc/passwd
+## user switch is done as the last step
 #end
 
 ARG FULLY_QUALIFIED_IMAGE='<unknown>'
-
 RUN echo "****************************************************" &&\
     echo "*** Image Info for Image ${FULLY_QUALIFIED_IMAGE}" &&\
     ls -la / &&\
@@ -66,3 +67,10 @@ RUN echo "****************************************************" &&\
     (! ${rewriteConfigProvided} || (cat /opt/tribefire/runtime/host/conf/Catalina/localhost/rewrite.config)) &&\
     echo "*** End of Image Info for Image ${FULLY_QUALIFIED_IMAGE}" &&\
     echo "****************************************************"
+
+## move relevant paths to a temporary location from where they will (at startup) be copied to a writable folder
+RUN /entrypoint/prepare-for-ready-only-root-file-system && rm /entrypoint/prepare-for-ready-only-root-file-system
+
+#if ( !${enableRootPermissions} )
+USER 1001
+#end
