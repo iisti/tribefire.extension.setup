@@ -70,7 +70,7 @@ RUN echo "****************************************************" &&\
 
 ## 2025-03-12 /var/lib/dpkg/triggers/Lock exists even in debian base image (in addition to other lock files such as /var/lib/dpkg/lock-frontend and /var/lib/dpkg/lock)
 ## but this file can only be read by the user itself, not the group, which is a problem when copying to /writable folder (see read-only-root-file-system).
-RUN chmod g+r var/lib/dpkg/triggers/Lock
+RUN if [ -f 'var/lib/dpkg/triggers/Lock' ]; then chmod g+r var/lib/dpkg/triggers/Lock; fi
 
 ## move relevant paths to a temporary location from where they will (at startup) be copied to a writable folder
 RUN /prepare-for-read-only-root-file-system && rm /prepare-for-read-only-root-file-system
