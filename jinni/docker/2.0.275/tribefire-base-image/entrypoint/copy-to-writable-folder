@@ -1,6 +1,0 @@
-#!/bin/sh
-
-set -e
-
-# copy to folder, which is either just a writable folder on the same file system or a mount for a separate, writable file system
-find '/to-be-writable' -mindepth 1 -maxdepth 1 -exec cp -a -t '/writable/' {} +

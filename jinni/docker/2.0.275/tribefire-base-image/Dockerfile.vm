@@ -88,10 +88,11 @@ COPY logging/json-logging.properties /opt/tribefire/runtime/host/conf/
 ENV TRIBEFIRE_RUNTIME_LOGLEVEL FINE
 
 ### Entrypoint ################################################################
-COPY entrypoint/ /entrypoint/
-RUN chmod ug+rx /entrypoint/entrypoint /entrypoint/copy-to-writable-folder /entrypoint/prepare-for-read-only-root-file-system
+COPY entrypoint /entrypoint
+COPY prepare-for-read-only-root-file-system /prepare-for-read-only-root-file-system
+RUN chmod ug+rx /entrypoint /prepare-for-read-only-root-file-system
 
-ENTRYPOINT ["/entrypoint/entrypoint"]
+ENTRYPOINT ["/entrypoint"]
 
 ### Startup ###################################################################
 COPY startup/ /opt/tribefire/startup/

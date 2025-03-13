@@ -1,8 +1,0 @@
-#!/bin/sh
-
-umask 002
-
-# copy relevant files to a writable folder
-/entrypoint/copy-to-writable-folder
-
-exec "$@"
