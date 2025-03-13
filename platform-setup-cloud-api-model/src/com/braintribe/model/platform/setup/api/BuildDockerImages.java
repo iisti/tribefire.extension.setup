@@ -93,10 +93,15 @@ public interface BuildDockerImages extends SetupRequest {
 	boolean getPush();
 	void setPush(boolean push);
 
-	@Description("Specifies the base image, i.e. the image used in the FROM instruction, e.g. 'debian:10.6'."
+	@Description("Specifies the base image, i.e. the image used in the FROM instruction of the Dockerfile, e.g. 'debian:12'."
 			+ " Note that there is no (global) default for this setting, because different versions of tribefire may use different base images."
-			+ " However, there are defaults in the Dockerfile templates which match the different versions of tribefire. Therefore it is usually not needed to configure this setting."
-			+ " It can be useful though in some cases, for example to check whether an issue is caused by the underlying operation system (version), e.g. debian 10.6 vs 10.7.")
+			+ " There are defaults in the Dockerfile templates though which match the different versions of tribefire."
+			+ " Therefore, it is usually not needed (and not recommended) to use this setting!"
+			+ " Its main purpose is to easily test with a slighty older or newer operation system version, for example debian:12.8 vs 12.9,"
+			+ " e.g. to see if an OS level vulnerability gets fixed with an update or some problem is caused by a recent version switch."
+			+ " Attention: Using a custom base image also means using untested base image! There may be errors either during build or later at runtime"
+			+ " and even if a custom image does currently work, updating to newer versions of Jinni may cause issues,"
+			+ " e.g. because the Dockerfile instructions now require some tools which are not available or behave differently in the custom base image.")
 	String getBaseImage();
 	void setBaseImage(String baseImage);
 
