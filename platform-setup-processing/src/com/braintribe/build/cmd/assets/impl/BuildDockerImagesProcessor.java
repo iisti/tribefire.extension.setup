@@ -70,8 +70,7 @@ import com.braintribe.ve.impl.OverridingEnvironment;
  * required for the particular setup and creates a folder structure like this:
  * <ul>
  * <li>tribefire-base-image/: contains resources to build the base image such the respective Dockerfile, the startup wrapper or
- * the base tomcat (see below). (Note that this is not needed for tribefire versions efore August 2020, i.e. before
- * tribefire.cortex.services:tribefire-web-platform#2.0.172.)</li>
+ * the base tomcat (see below).</li>
  * <li>tribefire-base-image/Dockerfile: the Dockerfile used to build the base image.</li>
  * <li>tribefire-base-image/tomcat/: the Tomcat installation without any (container specific) assets and configuration.</li>
  * <li>tomcat-package/: package directory from setup-local-tomcat-platform-for-docker (first setup where we don't add

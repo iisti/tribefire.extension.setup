@@ -28,8 +28,8 @@ import com.braintribe.model.service.api.ServiceRequest;
 import com.braintribe.model.service.api.result.Neutral;
 
 /**
- * This service request is used to build Docker images for a given platform setup package, which has to be built
- * separately before (see {@link PackagePlatformSetup}).
+ * This service request is used to build Docker images for a given platform setup package, which has to be built separately before (see
+ * {@link PackagePlatformSetup}).
  *
  * @author michael.lafite
  */
@@ -72,19 +72,18 @@ public interface BuildDockerImages extends SetupRequest {
 	String getDockerImageTag();
 	void setDockerImageTag(String dockerImageTag);
 
-	@Description("Specifies the image tag of the 'tribefire-base' Docker image which the images to be built depend on (i.e. the FROM image). Example: '2.0-core-stable'"
-			+ " Deprecated: This setting is only used for tribefire versions before August 2020, i.e. before tribefire.cortex.services:tribefire-web-platform#2.0.172.")
+	@Description("Deprecated: This setting is no longer deprecated and no longer used."
+			+ " It specifies the image tag of the 'tribefire-base' Docker image which the images to be built depend on (i.e. the FROM image). Example: '2.0-core-stable'")
 	String getTribefireBaseDockerImageTag();
 	void setTribefireBaseDockerImageTag(String tribefireBaseDockerImageTag);
 
-	@Description("The host name of the docker registry from which the base image(s) will be pulled."
-			+ " This is optional. If not set, the main docker registry will be used (see 'dockerRegistryHost')."
-			+ " Deprecated: This setting is only used for tribefire versions before August 2020, i.e. before tribefire.cortex.services:tribefire-web-platform#2.0.172.")
+	@Description("Deprecated: This setting is no longer deprecated and no longer used."
+			+ "It specifies the host name of the docker registry from which the base image(s) will be pulled."
+			+ " If not set, the main docker registry will be used (see 'dockerRegistryHost')")
 	String getTribefireBaseDockerRegistryHost();
 	void setTribefireBaseDockerRegistryHost(String tribefireBaseDockerRegistryHost);
 
-	@Description("Whether or not to delete the intermediate tribefire base image built by this request. For tribefire versions from August 2020 and later"
-			+ " an intermediate base image is built on-the-fly before building the actual Docker images. This base image is not needed after the building these other images, "
+	@Description("Whether or not to delete the intermediate tribefire base image built by this request. An intermediate base image is built on-the-fly before building the actual Docker images. This base image is not needed after the building these other images, "
 			+ " thus it's automatically deleted. Using this settings one can keep the image analyze it.")
 	@Initializer("true")
 	boolean getDeleteIntermediateBaseImage();
@@ -97,8 +96,7 @@ public interface BuildDockerImages extends SetupRequest {
 	@Description("Specifies the base image, i.e. the image used in the FROM instruction, e.g. 'debian:10.6'."
 			+ " Note that there is no (global) default for this setting, because different versions of tribefire may use different base images."
 			+ " However, there are defaults in the Dockerfile templates which match the different versions of tribefire. Therefore it is usually not needed to configure this setting."
-			+ " It can be useful though in some cases, for example to check whether an issue is caused by the underlying operation system (version), e.g. debian 10.6 vs 10.7."
-			+ " This feature is supported for tribefire versions after August 2020, i.e. starting with tribefire.cortex.services:tribefire-web-platform#2.0.172.")
+			+ " It can be useful though in some cases, for example to check whether an issue is caused by the underlying operation system (version), e.g. debian 10.6 vs 10.7.")
 	String getBaseImage();
 	void setBaseImage(String baseImage);
 
@@ -106,8 +104,7 @@ public interface BuildDockerImages extends SetupRequest {
 			+ " The URL must point to a '.tar.gz' file, which contains a single subfolder in the root folder, e.g. 'jdk-15'. OpenJDK and Zulu packages are known to work."
 			+ " Note that there is no (global) default for this setting, because different versions of tribefire may use different JDK versions."
 			+ " However, there are defaults in the Dockerfile templates which match the different versions of tribefire. Therefore it is usually not needed to configure this setting."
-			+ " It can be useful though in some cases, for example to check whether an issue is caused by the JDK version, e.g. JDK 15.0.1 vs 15.0.2."
-			+ " This feature is supported for tribefire versions after August 2020, i.e. starting with tribefire.cortex.services:tribefire-web-platform#2.0.172.")
+			+ " It can be useful though in some cases, for example to check whether an issue is caused by the JDK version, e.g. JDK 15.0.1 vs 15.0.2.")
 	String getJdkArchiveUrl();
 	void setJdkArchiveUrl(String jdkArchiveUrl);
 
@@ -174,7 +171,7 @@ public interface BuildDockerImages extends SetupRequest {
 	@Initializer("false")
 	boolean getEnableVirtualThreads();
 	void setEnableVirtualThreads(boolean enableVirtualThreads);
-	
+
 	@Description("If set, only images for the container(s) matching the specified regex will be built and pushed."
 			+ " Set e.g. to 'tribefire-master' to only build the master."
 			+ " Note that all the preparation steps will still be performed, just the Docker commands will be skipped."
