@@ -11,7 +11,7 @@ import static com.braintribe.console.ConsoleOutputs.brightRed;
 import static com.braintribe.console.ConsoleOutputs.println;
 import static com.braintribe.console.ConsoleOutputs.sequence;
 import static com.braintribe.console.ConsoleOutputs.text;
-import static com.braintribe.setup.tools.TfSetupTools.isPackagedAsJar;
+import static com.braintribe.setup.tools.TfSetupTools.hasJarPart;
 import static com.braintribe.utils.lcd.CollectionTools2.asSet;
 import static com.braintribe.utils.lcd.CollectionTools2.newMap;
 import static com.braintribe.utils.lcd.CollectionTools2.removeFirst;
@@ -83,7 +83,7 @@ class BasicClasspathPrimer {
 
 		Iterator<AnalysisArtifact> it = moduleSetup.classpath.iterator();
 		while (it.hasNext())
-			if (!isPackagedAsJar(s = it.next())) {
+			if (!hasJarPart(s = it.next())) {
 				printWillIgnoreNonJar(s, moduleSetup);
 				it.remove();
 			}
@@ -94,8 +94,7 @@ class BasicClasspathPrimer {
 			println(sequence( //
 					text("            Ignoring '"), //
 					solution(s), //
-					text("' as is it has no jar, but is packaged as: " + s.getOrigin().getPackaging()), //
-					text(". Module: " + moduleSetup.shortComponentName()) //
+					text("' as is it has no jar part. Module: " + moduleSetup.shortComponentName()) //
 			));
 	}
 
@@ -103,7 +102,7 @@ class BasicClasspathPrimer {
 		// Note that temporarily we also have models mixed with libraryDescriptors, so we also promote models from cartridges.
 		for (ComponentDescriptor libDescriptor : cp.libraryDescriptors) {
 			for (AnalysisArtifact librarySolution : libDescriptor.transitiveSolutions)
-				if (isPackagedAsJar(librarySolution))
+				if (hasJarPart(librarySolution))
 					promoteLibraryToPlatform(librarySolution, libDescriptor);
 			failIfClashes(libDescriptor);
 		}

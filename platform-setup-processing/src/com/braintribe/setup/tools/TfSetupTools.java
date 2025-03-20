@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -85,12 +84,14 @@ public interface TfSetupTools {
 	// ## . . . . . . . . . Malaclypse . . . . . . . . . ##
 	// ####################################################
 
-	static void withNewArtifactResolutionContext(RepositoryConfigurationLocator repoConfigLocator, VirtualEnvironment env, Consumer<ArtifactResolutionContext> closure) {
+	static void withNewArtifactResolutionContext( //
+			RepositoryConfigurationLocator repoConfigLocator, VirtualEnvironment env, Consumer<ArtifactResolutionContext> closure) {
+
 		try (WireContext<ArtifactResolutionContract> wc = Wire.context(new ArtifactResolutionWireModule(repoConfigLocator, env, false))) {
 			closure.accept(wc.contract());
 		}
 	}
-	
+
 	static void withNewArtifactResolutionContext(VirtualEnvironment env, Consumer<ArtifactResolutionContext> closure) {
 		try (WireContext<ArtifactResolutionContract> wc = Wire.context(new ArtifactResolutionWireModule(env, false))) {
 			closure.accept(wc.contract());
@@ -164,9 +165,8 @@ public interface TfSetupTools {
 		return Optional.ofNullable(solution.getParts().get(type.asString()));
 	}
 
-	static boolean isPackagedAsJar(AnalysisArtifact solution) {
-		String p = solution.getOrigin().getPackaging();
-		return p == null || p.equalsIgnoreCase("jar") || p.equalsIgnoreCase("bundle");
+	static boolean hasJarPart(AnalysisArtifact solution) {
+		return findPart(solution, PartIdentifications.jar).isPresent();
 	}
 
 	// ####################################################

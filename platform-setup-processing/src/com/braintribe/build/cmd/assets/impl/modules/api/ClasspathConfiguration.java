@@ -362,7 +362,7 @@ public class ClasspathConfiguration {
 	}
 
 	public boolean isNoble(AnalysisArtifact solution) {
-		return TfSetupTools.isPackagedAsJar(solution) && isNoble(getGmNature(solution));
+		return TfSetupTools.hasJarPart(solution) && isNoble(getGmNature(solution));
 	}
 
 	public boolean isPlatformOnly(AnalysisArtifact solution) {

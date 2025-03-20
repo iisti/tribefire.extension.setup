@@ -138,6 +138,7 @@ public abstract class AbstractTfSetupResolverTest implements ArtifactNames {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private RepositoryConfiguration repositoryConfiguration(RepoContext repoCtx) {
 		MavenHttpRepository repo = MavenHttpRepository.T.create();
 		repo.setUrl("http://localhost:" + repoCtx.launcher.getAssignedPort() + "/archive/");

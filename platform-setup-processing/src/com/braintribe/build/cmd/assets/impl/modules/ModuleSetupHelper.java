@@ -127,25 +127,9 @@ public class ModuleSetupHelper {
 				.collect(Collectors.toList());
 
 		if (result.isEmpty())
-			throw newJarWasExpectedException(s);
+			throw new GenericModelException("No jar part found for solution: " + s.asString());
 
 		return result;
-	}
-
-	private static GenericModelException newJarWasExpectedException(AnalysisArtifact s) {
-		StringBuilder sb = new StringBuilder("No jar part found for solution: " + s.asString() + ". ");
-
-		String packaging = s.getOrigin().getPackaging();
-		if (TfSetupTools.isPackagedAsJar(s)) {
-			sb.append("Jar is expected based on the packaging information in solutions's pom.xml. ");
-			if (packaging == null)
-				sb.append("No packaging is specified, which means 'jar' by default.");
-			else
-				sb.append("Packaging: " + packaging);
-		} else
-			sb.append("There seems to be some bug, as the solution clearly states it's not packaged as a jar, but: " + packaging);
-
-		return new GenericModelException(sb.toString());
 	}
 
 	/** Finds a location of jar with no classifier, i.e. part ":jar" */
