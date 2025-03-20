@@ -192,6 +192,7 @@ public class SetupRepositoryConfigurationProcessorMergeTest extends AbstractTest
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testSimplePropertiesMerging() {
 

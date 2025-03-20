@@ -17,9 +17,7 @@ import com.braintribe.testing.junit.assertions.assertj.core.api.Assertions;
 import com.braintribe.testing.test.AbstractTest;
 
 /**
- * Provides {@link CheckLicenseProcessor} tests.
- *
- * @author Ralf Ulrich
+ * Tests for {@link CheckLicenseProvider}.
  */
 public class CheckLicenseProcessorTest extends AbstractTest implements CheckLicenseProvider {
 
@@ -126,6 +124,7 @@ public class CheckLicenseProcessorTest extends AbstractTest implements CheckLice
 
 	@Override
 	public void addErrorMsg(String string) {
+		// empty
 	}
 
 	@Override

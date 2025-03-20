@@ -17,6 +17,8 @@ package com.braintribe.tribefire.jinni.cmdline.api;
 
 public class ParseException extends RuntimeException {
 
+	private static final long serialVersionUID = 4042659032763109580L;
+
 	public ParseException() {
 		super();
 		// TODO Auto-generated constructor stub

@@ -134,9 +134,7 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 	// read config file. exclude commented lines. return as List<String>
 	private List<String> readLinesFromFile(Path fileName) {
 		List<String> result = new ArrayList<>();
-		try {
-			FileInputStream inputStream = new FileInputStream(fileName.toFile());
-			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName.toFile())))) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				line = line.trim();
@@ -204,7 +202,7 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 
 		private final PathMatcher matcherJava;
 		private final PathMatcher matcherXML;
-		private List<PathMatcher> excludedFilePatterns = new ArrayList<>();
+		private final List<PathMatcher> excludedFilePatterns = new ArrayList<>();
 
 		List<Path> wrongFiles = new ArrayList<>();
 		List<Path> wrongCRLF = new ArrayList<>();
@@ -217,7 +215,6 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 		int numCRLF = 0; // how many Windows-style files
 		int numCRLFfixed = 0;
 		int numFilesCopy = 0; // how many LICENSE/NOTICE/COPYING* files copied
-		int numFilesDelete = 0; // how many LICENSE/NOTICE/COPYING* files deleted
 		int numFilesWrong = 0;
 		
 		Set<String> dryHandledExtensions = new HashSet<>();
@@ -241,7 +238,6 @@ public class CheckLicenseProcessor implements ReasonedServiceProcessor<CheckLice
 			if (!dedicatedContent.toFile().exists()) {
 				// remove if the repo has this file
 				if (Files.exists(path)) {
-					numFilesDelete++;
 					if (checkOnly)
 						System.out.println("dry deleting " + path.toAbsolutePath().toString());
 					else {

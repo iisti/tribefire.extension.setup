@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
@@ -48,7 +50,7 @@ import com.braintribe.ve.api.VirtualEnvironment;
 public class FromResolver implements Function<From, GenericEntity> {
 
 	private final JinniContract jinniContract;
-	private VirtualEnvironment virtualEnvironment;
+	private final VirtualEnvironment virtualEnvironment;
 
 	public FromResolver(JinniContract jinniContract, VirtualEnvironment virtualEnvironment) {
 		this.jinniContract = jinniContract;
@@ -85,13 +87,16 @@ public class FromResolver implements Function<From, GenericEntity> {
 					options = options.set(EntityFactory.class, EntityType::create);
 
 				return (GenericEntity) marshaller.unmarshall(in, options.build());
+
+			} catch (URISyntaxException e) {
+				throw new RuntimeException(e);
 			} catch (IOException e) {
 				throw new UncheckedIOException(e);
 			}
 		}
 	}
 
-	private InputStream openInputStream(From from) throws IOException {
+	private InputStream openInputStream(From from) throws IOException, URISyntaxException {
 		if (from instanceof FromStdin) {
 			return new KeepAliveDelegateInputStream(System.in);
 		} else if (from instanceof FromUrl) {
@@ -101,7 +106,7 @@ public class FromResolver implements Function<From, GenericEntity> {
 			if (urlProperty == null)
 				throw new IllegalStateException("FromUrl is missing url");
 
-			URL url = new URL(urlProperty);
+			URL url = new URI(urlProperty).toURL();
 			return url.openStream();
 		} else if (from instanceof FromFile) {
 			FromFile fromFile = (FromFile) from;

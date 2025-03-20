@@ -47,7 +47,6 @@ import com.braintribe.model.jinni.api.Introduce;
 import com.braintribe.model.jinni.api.JinniReflectionRequest;
 import com.braintribe.model.jinni.api.PrintVersion;
 import com.braintribe.model.jinni.api.ReflectLibraries;
-import com.braintribe.model.processing.service.api.ServiceRequestContext;
 import com.braintribe.model.processing.service.impl.AbstractDispatchingServiceProcessor;
 import com.braintribe.model.processing.service.impl.DispatchConfiguration;
 import com.braintribe.model.service.api.result.Neutral;
@@ -165,7 +164,7 @@ public class JinniReflectionProcessor extends AbstractDispatchingServiceProcesso
 		dispatching.register(ReflectLibraries.T, (c, r) -> reflectLibraries());
 		dispatching.register(PrintVersion.T, (c, r) -> printVersion());
 		dispatching.register(GetVersion.T, (c, r) -> getVersion());
-		dispatching.registerReasoned(GetConfig.T, this::getConfig);
+		dispatching.registerReasoned(GetConfig.T, (c, r) -> getConfig(r));
 	}
 
 	@Configurable
@@ -254,7 +253,7 @@ public class JinniReflectionProcessor extends AbstractDispatchingServiceProcesso
 		return determineVersion();
 	}
 	
-	private Maybe<Object> getConfig(ServiceRequestContext context, GetConfig request) {
+	private Maybe<Object> getConfig(GetConfig request) {
 		
 		String name = request.getName();
 		
