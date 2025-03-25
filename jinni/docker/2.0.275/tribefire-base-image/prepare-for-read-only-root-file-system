@@ -30,7 +30,6 @@ for path in \
 	/usr/share/fonts \
 	/var/lib \
 	/var/log \
-	/var/run \
 	/var/tmp
 do
 	# set target paths
