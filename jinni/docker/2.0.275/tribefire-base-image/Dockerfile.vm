@@ -62,7 +62,7 @@ ENV PATH ${d}{PATH}:${d}{JAVA_HOME}/bin
 COPY --from=resourcesDownloadHelperImage /tmp/jdk/jdk.tar.gz /tmp/jdk/jdk.tar.gz
 RUN echo Installing JDK. &&\
     cd /tmp/jdk &&\
-    tar -xzf jdk.tar.gz &&\
+    tar --no-same-owner -xzf jdk.tar.gz &&\
     rm jdk.tar.gz &&\
     mv */ ${d}{JAVA_HOME}/ &&\
     rm -rf /tmp/jdk
