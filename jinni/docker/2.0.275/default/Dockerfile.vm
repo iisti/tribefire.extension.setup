@@ -68,9 +68,14 @@ RUN echo "****************************************************" &&\
     echo "*** End of Image Info for Image ${FULLY_QUALIFIED_IMAGE}" &&\
     echo "****************************************************"
 
-## 2025-03-12 /var/lib/dpkg/triggers/Lock exists even in debian base image (in addition to other lock files such as /var/lib/dpkg/lock-frontend and /var/lib/dpkg/lock)
-## but this file can only be read by the user itself, not the group, which is a problem when copying to /writable folder (see read-only-root-file-system).
-RUN if [ -f 'var/lib/dpkg/triggers/Lock' ]; then chmod g+r var/lib/dpkg/triggers/Lock; fi
+## the file system contains paths where either group 'root' has no read access or where the group is a different one and 'others' don't have read access.
+## for the paths which have to be writable (see read-only-root-file-system), read access has to be granted.
+
+# if group is 'root' but group has no read access, grant it
+RUN find /var/lib/ -group root ! -perm -040 -exec chmod g+r {} +
+
+# if group is not 'root' and 'others' don't have read access, grant it
+RUN find /var/lib/ ! -group root ! -perm -004 -exec chmod o+r {} +
 
 ## move relevant paths to a temporary location from where they will (at startup) be copied to a writable folder
 RUN /prepare-for-read-only-root-file-system && rm /prepare-for-read-only-root-file-system
