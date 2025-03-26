@@ -71,10 +71,10 @@ RUN echo "****************************************************" &&\
 ## the file system contains paths where either group 'root' has no read access or where the group is a different one and 'others' don't have read access.
 ## for the paths which have to be writable (see read-only-root-file-system), read access has to be granted.
 
-# if group is 'root' but group has no read access, grant it
+## if group is 'root' but group has no read access, grant it
 RUN find /var/lib/ -group root ! -perm -040 -exec chmod g+r {} +
 
-# if group is not 'root' and 'others' don't have read access, grant it
+## if group is not 'root' and 'others' don't have read access, grant it
 RUN find /var/lib/ ! -group root ! -perm -004 -exec chmod o+r {} +
 
 ## clean up some folder contents (but keep the folders)
