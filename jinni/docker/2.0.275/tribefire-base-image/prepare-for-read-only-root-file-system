@@ -34,4 +34,10 @@ do
 
 	# create symlink pointing to final target
 	ln -s "${finalTarget}" "${path}"
+
+	# special handling for '/run' folder: just the symlink is needed (see above), but the folder will be created
+	# (usually due to mounted secret), hence there is no need to have this in temporary target folder.
+	if [ "${path}" = '/run' ]; then
+		rmdir "${temporaryTarget}"
+	fi
 done
