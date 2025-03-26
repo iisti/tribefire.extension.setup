@@ -4,6 +4,15 @@ set -e
 temporaryTargetBaseFolder='/to-be-writable'
 finalTargetBaseFolder='/writable'
 
+if [ "${1}" = "--root-user-mode=true" ]; then
+	rootUserModeEnabled='true'
+elif [ "${1}" = "--root-user-mode=false" ]; then
+	rootUserModeEnabled='false'
+else
+	echo 'Parameter --root-user-mode not specified!'
+	exit 1
+fi
+
 # prepare base folders
 mkdir -p "${temporaryTargetBaseFolder}"
 chmod 755 "${temporaryTargetBaseFolder}"
@@ -15,6 +24,7 @@ chmod 775 "${finalTargetBaseFolder}"
 for path in \
 	/home \
 	/opt/tribefire \
+	/root \
 	/run \
 	/tmp \
 	/usr/share/fonts \
@@ -22,6 +32,10 @@ for path in \
 	/var/log \
 	/var/tmp
 do
+	if [ "${path}" = '/root' ] && [ "${rootUserModeEnabled}" = 'false' ]; then
+		continue
+	fi
+
 	# set target paths
 	temporaryTarget="${temporaryTargetBaseFolder}${path}"
 	finalTarget="${finalTargetBaseFolder}${path}"
