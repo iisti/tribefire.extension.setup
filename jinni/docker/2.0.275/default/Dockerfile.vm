@@ -77,6 +77,11 @@ RUN find /var/lib/ -group root ! -perm -040 -exec chmod g+r {} +
 # if group is not 'root' and 'others' don't have read access, grant it
 RUN find /var/lib/ ! -group root ! -perm -004 -exec chmod o+r {} +
 
+## clean up some folder contents (but keep the folders)
+RUN for folder in /run /tmp /var/log /var/tmp; do \
+      find "${folder}" -mindepth 1 -exec rm -rf {} +; \
+    done
+
 ## move relevant paths to a temporary location from where they will (at startup) be copied to a writable folder
 RUN /prepare-for-read-only-root-file-system && rm /prepare-for-read-only-root-file-system
 

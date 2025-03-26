@@ -12,16 +12,7 @@ chmod 755 "${temporaryTargetBaseFolder}"
 mkdir -p "${finalTargetBaseFolder}"
 chmod 775 "${finalTargetBaseFolder}"
 
-# for each folder, clean all folder content but keep the folder itself
-for folder in \
-	/tmp \
-	/var/log \
-	/var/tmp
-do
-	find "${folder}" -mindepth 1 -exec rm -rf {} +
-done
-
-# for each path, move path to temporary folder and then create symlink at original location pointing to final folder
+# for each path, move to temporary folder and then create symlink at original location pointing to final folder
 for path in \
 	/home \
 	/opt/tribefire \
