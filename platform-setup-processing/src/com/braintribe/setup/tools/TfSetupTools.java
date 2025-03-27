@@ -166,7 +166,10 @@ public interface TfSetupTools {
 	}
 
 	static boolean hasJarPart(AnalysisArtifact solution) {
-		return findPart(solution, PartIdentifications.jar).isPresent();
+		return solution.getParts().values().stream() //
+				.filter(p -> "jar".equals(p.getType())) //
+				.findAny() //
+				.isPresent();
 	}
 
 	// ####################################################
