@@ -124,24 +124,6 @@ public class MavenMetaDataTools {
 		}
 	}
 	
-	public static void writeVersionMetadata(PlatformAsset asset, File versionMetaDataFile) {
-		try {
-			Versioning versioning = Versioning.T.create();
-			versioning.setLastUpdated(formatMavenMetaDataDate(new Date()));
-			
-			MavenMetaData mavenMetaData = MavenMetaData.T.create();
-			mavenMetaData.setArtifactId(asset.getName());
-			mavenMetaData.setGroupId(asset.getGroupId());
-			mavenMetaData.setVersion(Version.parse(asset.getVersion()+ '.' + asset.getResolvedRevision()));
-			mavenMetaData.setVersioning(versioning);
-
-			// TODO what now?
-
-		} catch (Exception e) {
-			throw new RuntimeException("error while creating metadata", e);
-		}
-	}
-	
 	public static void writeMetaData(MavenMetaData mavenMetaData, File file) throws FileNotFoundException, IOException {
 		try (OutputStream out = new BufferedOutputStream(new FileOutputStream(file))) {
 			DeclaredMavenMetaDataMarshaller.INSTANCE.marshall(out, mavenMetaData);

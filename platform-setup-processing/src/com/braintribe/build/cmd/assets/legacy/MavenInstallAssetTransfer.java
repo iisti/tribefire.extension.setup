@@ -19,7 +19,7 @@ import com.braintribe.model.service.api.ServiceRequest;
 import com.braintribe.utils.paths.PathList;
 
 /**
- * @deprecated Review if needed. These were copied here to support {@link CreateProject} and {@link InstallLicense} (as theis handlers use it). The
+ * @deprecated Review if needed. These were copied here to support {@link CreateProject} and InstallLicense (as their handlers use it). The
  *             former is questionable and the latter is itself deprecated.
  */
 @Deprecated
