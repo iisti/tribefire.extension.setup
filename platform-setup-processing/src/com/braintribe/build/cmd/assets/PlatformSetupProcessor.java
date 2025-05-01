@@ -1091,7 +1091,7 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 			RegistryEntry registryEntry = RegistryEntry.T.create();
 			registryEntry.setBindId(component.getBindId());
 			registryEntry.setDenotation(deriveDenotation(component, entry.getValue(), denotation, false));
-			
+
 			registryEntries.add(registryEntry);
 		}
 		
@@ -1101,7 +1101,7 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 			for (PredefinedComponent use: PredefinedComponent.values()) {
 				if (!predefinedComponents.containsKey(use)) {
 					GenericEntity derivedDenotation = deriveDenotation(use, defaultDbConnection, denotation, true);
-					
+
 					if (derivedDenotation != null) {
 						RegistryEntry registryEntry = RegistryEntry.T.create();
 						registryEntry.setBindId(use.getBindId());
@@ -1161,7 +1161,6 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 	private GenericEntity deriveDenotation(PredefinedComponent use, GenericEntity denotation, SetupLocalTomcatPlatform request, boolean defaulting) {
 		
 		switch (use) {
-			case MQ:
 			case ADMIN_USER:
 				return defaulting? null: denotation;
 				
