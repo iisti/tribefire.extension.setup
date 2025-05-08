@@ -83,6 +83,7 @@ import com.braintribe.build.cmd.assets.impl.SimplePlatformAssetResolutionContext
 import com.braintribe.build.cmd.assets.impl.UpdateGroupVersionProcessor;
 import com.braintribe.build.cmd.assets.impl.check.process.CheckGroupProcessor;
 import com.braintribe.build.cmd.assets.impl.check.process.CheckReport;
+import com.braintribe.build.cmd.assets.impl.docker.BuildDockerImageWithLocalSetupProcessor;
 import com.braintribe.build.cmd.assets.impl.modules.DebugFolderMerger;
 import com.braintribe.build.cmd.assets.impl.modules.ModuleFolderMerger;
 import com.braintribe.build.cmd.assets.impl.views.backup.BackupArtifactsProcessor;
@@ -146,6 +147,7 @@ import com.braintribe.model.generic.typecondition.basic.IsAssignableTo;
 import com.braintribe.model.generic.typecondition.stringifier.TypeConditionStringifier;
 import com.braintribe.model.messaging.expert.Messaging;
 import com.braintribe.model.platform.setup.api.BackupArtifacts;
+import com.braintribe.model.platform.setup.api.BuildDockerImageWithLocalSetup;
 import com.braintribe.model.platform.setup.api.BuildDockerImages;
 import com.braintribe.model.platform.setup.api.CheckGroup;
 import com.braintribe.model.platform.setup.api.CreateBackup;
@@ -310,6 +312,8 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 		dispatching.register(UpdateGroupVersion.T,                   (c, r) -> updateGroupVersion(r));
 		dispatching.register(IncrementRevisions.T,                   (c, r) -> incrementRevisions(r));
 		dispatching.register(CheckGroup.T,                           (c, r) -> checkGroup(r));
+
+		dispatching.registerReasoned(BuildDockerImageWithLocalSetup.T, (c, r) -> buildDockerImageWithLocalSetup(r));
 		// @formatter:on
 	}
 	
@@ -443,7 +447,11 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 
 		return Neutral.NEUTRAL;
 	}
-	
+
+	private Maybe<Neutral> buildDockerImageWithLocalSetup(BuildDockerImageWithLocalSetup request) {
+		return BuildDockerImageWithLocalSetupProcessor.process(request);
+	}
+
 	private String updateGroupVersion(UpdateGroupVersion request) {
 		return UpdateGroupVersionProcessor.process(request);
 	}
@@ -496,11 +504,7 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 	private SetupInfo setupLocalTomcatPlatform(ServiceRequestContext requestContext, SetupLocalTomcatPlatform denotation) {
 		String denotationInstallationPath = denotation.getInstallationPath();
 		if (denotationInstallationPath == null) {
-			String project = denotation.getProject();
-			if (project == null)
-				throw new NullPointerException("'installationPath' must be set if 'project' is not specified.");
-
-			denotationInstallationPath = CallerEnvironment.resolveRelativePath(replaceIllegalCharacters(project)).getPath();
+			denotationInstallationPath = resolveDefaultInstallationPath(denotation);
 			denotation.setInstallationPath(denotationInstallationPath);
 		}
 
@@ -621,6 +625,14 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 		writeUpdateInfo(installationPath, runtimeUpdateInfo);
 
 		return setupInfo;
+	}
+
+	public static String resolveDefaultInstallationPath(SetupLocalTomcatPlatform denotation) {
+		String project = denotation.getProject();
+		if (project == null)
+			throw new NullPointerException("'installationPath' must be set if 'project' is not specified.");
+
+		return CallerEnvironment.resolveRelativePath(replaceIllegalCharacters(project)).getPath();
 	}
 
 	/**
@@ -969,7 +981,7 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 		}
 	}
 
-	private String replaceIllegalCharacters(String project) {
+	private static String replaceIllegalCharacters(String project) {
 		return project.replace(':', '.').replace('#', '-');
 	}
 

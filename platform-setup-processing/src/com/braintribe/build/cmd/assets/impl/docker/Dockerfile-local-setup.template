@@ -1,0 +1,7 @@
+FROM ${BASE_IMAGE}
+
+COPY ${INSTALLATION_PATH} /app
+
+EXPOSE 8080
+
+CMD ["/app/runtime/host/bin/catalina.sh", "run"]
