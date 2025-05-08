@@ -32,8 +32,7 @@ import com.braintribe.model.service.api.result.Neutral;
  * <p>
  * It takes the YML file with a {@link SetupLocalTomcatPlatform} as input, and assumes this request was already processed (by a previous call).
  * <p>
- * In order to find the {@link SetupLocalTomcatPlatform#getInstallationPath()} it uses the same logic as the setup task. Thus if this is not
- * specified, this only works if both tasks are called in the same working directory.
+ * Note that the task creates a file called `Dockerfile-local-setup` in the parent directory of the {@link #getInstallationPath()}.
  */
 @Description("Builds and optionally pushes a Docker image with a (previously installed) local setup.")
 public interface BuildDockerImageWithLocalSetup extends SetupRequest {
@@ -42,11 +41,6 @@ public interface BuildDockerImageWithLocalSetup extends SetupRequest {
 
 	@Override
 	EvalContext<Neutral> eval(Evaluator<ServiceRequest> evaluator);
-
-	@Description("The base directory where Dockefile will be prepared.")
-	@Initializer("'.'")
-	String getBaseDir();
-	void setBaseDir(String baseDir);
 
 	@Description("The directory that was used as installationPath for setup-local-tomcat-platform.")
 	@FolderName

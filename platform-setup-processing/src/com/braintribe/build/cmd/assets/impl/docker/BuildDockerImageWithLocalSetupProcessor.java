@@ -64,9 +64,9 @@ public class BuildDockerImageWithLocalSetupProcessor {
 
 	private BuildDockerImageWithLocalSetupProcessor(BuildDockerImageWithLocalSetup request) {
 		this.request = request;
-		this.baseDir = new File(request.getBaseDir());
-		this.fDockerfile = new File(baseDir, DOCKERFILE_NAME);
 		this.installationDir = new File(request.getInstallationPath());
+		this.baseDir = installationDir.getParentFile();
+		this.fDockerfile = new File(baseDir, DOCKERFILE_NAME);
 	}
 
 	private Maybe<Neutral> run() {
@@ -134,16 +134,11 @@ public class BuildDockerImageWithLocalSetupProcessor {
 	private void resolveDockerfileTemplate() {
 		dockerfile = dockerfile //
 				.replace("${BASE_IMAGE}", request.getBaseImage()) //
-				.replace("${INSTALLATION_PATH}", relativePathToInstallationDir()) //
+				.replace("${INSTALLATION_PATH}", installationDir.getName()) //
 		;
 	}
 
-	private String relativePathToInstallationDir() {
-		return baseDir.toPath().relativize(installationDir.toPath()).toString();
-	}
-
 	private void writeDockerfile() {
-		File fDockerfile = new File(request.getBaseDir(), DOCKERFILE_NAME);
 		FileTools.write(fDockerfile).string(dockerfile);
 	}
 
