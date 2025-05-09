@@ -24,13 +24,16 @@ import java.util.stream.Collectors;
 import com.braintribe.build.process.ProcessException;
 import com.braintribe.build.process.ProcessExecution;
 import com.braintribe.build.process.ProcessResults;
+import com.braintribe.codec.marshaller.yaml.YamlMarshaller;
 import com.braintribe.gm.model.reason.Maybe;
 import com.braintribe.gm.model.reason.Reason;
 import com.braintribe.gm.model.reason.essential.InvalidArgument;
 import com.braintribe.gm.model.reason.essential.NotFound;
 import com.braintribe.logging.Logger;
+import com.braintribe.model.artifact.essential.VersionedArtifactIdentification;
 import com.braintribe.model.platform.setup.api.BuildDockerImageWithLocalSetup;
 import com.braintribe.model.platform.setup.api.SetupLocalTomcatPlatform;
+import com.braintribe.model.platform.setup.api.data.SetupDescriptor;
 import com.braintribe.model.service.api.result.Neutral;
 import com.braintribe.utils.CollectionTools;
 import com.braintribe.utils.FileTools;
@@ -57,6 +60,10 @@ public class BuildDockerImageWithLocalSetupProcessor {
 	private final File baseDir;
 	private final File fDockerfile;
 	private final File installationDir;
+	private final File setupInfoFile;
+
+	private String latestTag;
+	private String versionedTag;
 
 	private String dockerfile;
 
@@ -65,6 +72,7 @@ public class BuildDockerImageWithLocalSetupProcessor {
 	private BuildDockerImageWithLocalSetupProcessor(BuildDockerImageWithLocalSetup request) {
 		this.request = request;
 		this.installationDir = new File(request.getInstallationPath());
+		this.setupInfoFile = new File(installationDir, "setup-info/setup-descriptor.yaml");
 		this.baseDir = installationDir.getParentFile();
 		this.fDockerfile = new File(baseDir, DOCKERFILE_NAME);
 	}
@@ -80,9 +88,11 @@ public class BuildDockerImageWithLocalSetupProcessor {
 
 	private boolean processOk() {
 		return validate() && //
+				resolveImageTags() && //
 				prepareDockerfile() && //
-				buildDockerImage() && //
-				pushDockerImageIfRequested();
+				buildLatestDockerImage() && //
+				tagLatestDockerImageWithVersion() && //
+				pushDockerImagesIfRequested();
 	}
 
 	// ######################################################
@@ -90,18 +100,49 @@ public class BuildDockerImageWithLocalSetupProcessor {
 	// ######################################################
 
 	private boolean validate() {
-		return verifyExistingDirectory(installationDir, "installationPath", request.getInstallationPath());
+		return verifyExistingDirectory(installationDir, "installationPath", request.getInstallationPath()) && //
+				verifyExistingFile(setupInfoFile);
 	}
 
 	private boolean verifyExistingDirectory(File file, String whatItIs, String parameterGiven) {
-		if (!file.exists())
-			error = NotFound.create("File not found for given " + whatItIs + ": " + parameterGiven + " (" + file.getAbsolutePath() + ")");
-		else if (!file.isDirectory())
-			error = InvalidArgument.create("Given " + whatItIs + " is not a directory: " + parameterGiven + " (" + file.getAbsolutePath() + ") ");
-		else
+		if (file.isDirectory())
 			return true;
 
+		if (!file.exists())
+			error = NotFound.create("No directory exists for " + whatItIs + ": " + parameterGiven + ", full path: " + file.getAbsolutePath());
+		else
+			error = InvalidArgument.create("Given " + whatItIs + " is not a directory: " + parameterGiven + ", full path:" + file.getAbsolutePath());
+
 		return false;
+	}
+
+	private boolean verifyExistingFile(File file) {
+		if (file.exists())
+			return true;
+
+		error = NotFound.create("File " + file.getName() + " not found inside the installation directory");
+		return false;
+	}
+
+	// ######################################################
+	// ## . . . . . . . . . Image tags . . . . . . . . . . ##
+	// ######################################################
+
+	private boolean resolveImageTags() {
+		YamlMarshaller yamlMarshaller = new YamlMarshaller();
+		SetupDescriptor setupDescriptor = (SetupDescriptor) FileTools.read(setupInfoFile).fromInputStream(yamlMarshaller::unmarshall);
+
+		String primarySetupAsset = setupDescriptor.getPrimarySetupAsset();
+		VersionedArtifactIdentification vai = VersionedArtifactIdentification.parse(primarySetupAsset);
+
+		String imageName = request.getImageNameTemplate() //
+				.replace("$GROUP_ID", vai.getGroupId()) //
+				.replace("$ARTIFACT_ID", vai.getArtifactId());
+
+		latestTag = imageName + ":latest";
+		versionedTag = imageName + ":" + vai.getVersion();
+
+		return true;
 	}
 
 	// ######################################################
@@ -146,10 +187,10 @@ public class BuildDockerImageWithLocalSetupProcessor {
 	// ## . . . . . . Build/Push Docker image . . . . . . .##
 	// ######################################################
 
-	private boolean buildDockerImage() {
+	private boolean buildLatestDockerImage() {
 		println("Building Docker image...");
 
-		List<String> cmd = CollectionTools.getList("docker", "build", ".", "-t", request.getTag(), "-f", DOCKERFILE_NAME);
+		List<String> cmd = CollectionTools.getList("docker", "build", ".", "-t", latestTag, "-f", DOCKERFILE_NAME);
 
 		if (request.getPullUpdatedBaseImage())
 			cmd.add("--pull");
@@ -160,21 +201,28 @@ public class BuildDockerImageWithLocalSetupProcessor {
 		return runCommand(cmd);
 	}
 
-	private boolean pushDockerImageIfRequested() {
+	private boolean tagLatestDockerImageWithVersion() {
+		println("Tagging latest Docker image with version...");
+
+		return runCommand(Arrays.asList("docker", "tag", latestTag, versionedTag));
+	}
+
+	private boolean pushDockerImagesIfRequested() {
 		if (!request.getPush()) {
-			println("Will not push Docker image.");
+			println("Will not push Docker images.");
 			return true;
 		}
 
-		println("Pushing Docker image...");
+		println("Pushing Docker images...");
 
-		return runCommand(Arrays.asList("docker", "push", request.getTag()));
+		return runCommand(Arrays.asList("docker", "push", latestTag)) && //
+				runCommand(Arrays.asList("docker", "push", versionedTag));
 	}
 
 	private boolean runCommand(List<String> cmd) {
 		String cmdStringForLogging = cmd.stream().collect(Collectors.joining(" "));
 
-		println(sequence(text("Executing: "), yellow(cmdStringForLogging)));
+		println(sequence(text("\nExecuting: "), yellow(cmdStringForLogging)));
 
 		try {
 			ProcessResults result = ProcessExecution.runCommand(cmd, baseDir, null, null);

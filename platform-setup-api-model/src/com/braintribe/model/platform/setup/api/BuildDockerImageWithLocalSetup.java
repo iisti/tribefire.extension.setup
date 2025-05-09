@@ -16,7 +16,6 @@
 package com.braintribe.model.platform.setup.api;
 
 import com.braintribe.model.generic.annotation.Initializer;
-import com.braintribe.model.generic.annotation.meta.Alias;
 import com.braintribe.model.generic.annotation.meta.Description;
 import com.braintribe.model.generic.annotation.meta.FolderName;
 import com.braintribe.model.generic.annotation.meta.Mandatory;
@@ -48,11 +47,11 @@ public interface BuildDockerImageWithLocalSetup extends SetupRequest {
 	String getInstallationPath();
 	void setInstallationPath(String installationPath);
 
-	@Description("The name and tag of the image being built. `-t` value of `docker build`.")
-	@Alias("t")
+	@Description("The template for the name image being built, which may contain `$GROUP_ID` and `$ARTIFACT_ID`	placeholders. "
+			+ " Two tags will be used, one based on the setup version and `latest`. Final values are passed as  `-t` argument of `docker build`.")
 	@Mandatory
-	String getTag();
-	void setTag(String tag);
+	String getImageNameTemplate();
+	void setImageNameTemplate(String imageNameTemplate);
 
 	@Description("Whether or not to push Docker images after building.")
 	boolean getPush();
