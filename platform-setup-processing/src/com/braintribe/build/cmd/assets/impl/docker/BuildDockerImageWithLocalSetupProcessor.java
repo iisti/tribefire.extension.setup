@@ -135,9 +135,15 @@ public class BuildDockerImageWithLocalSetupProcessor {
 		String primarySetupAsset = setupDescriptor.getPrimarySetupAsset();
 		VersionedArtifactIdentification vai = VersionedArtifactIdentification.parse(primarySetupAsset);
 
-		String imageName = request.getImageNameTemplate() //
-				.replace("$GROUP_ID", vai.getGroupId()) //
-				.replace("$ARTIFACT_ID", vai.getArtifactId());
+		String imageNameTemplate = request.getImageNameTemplate();
+		String imageName = imageNameTemplate //
+				.replace("_GROUP_ID_", vai.getGroupId()) //
+				.replace("_ARTIFACT_ID_", vai.getArtifactId());
+
+		println("\nSETUP/IMAGE INFO:\n");
+		println(sequence(text(primarySetupAsset), yellow(primarySetupAsset)));
+		println(sequence(text("Image name template: "), yellow(imageNameTemplate)));
+		println(sequence(text("Image name: "), yellow(imageName)));
 
 		latestTag = imageName + ":latest";
 		versionedTag = imageName + ":" + vai.getVersion();

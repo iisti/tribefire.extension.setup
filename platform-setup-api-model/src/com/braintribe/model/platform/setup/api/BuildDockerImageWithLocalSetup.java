@@ -47,7 +47,8 @@ public interface BuildDockerImageWithLocalSetup extends SetupRequest {
 	String getInstallationPath();
 	void setInstallationPath(String installationPath);
 
-	@Description("The template for the name image being built, which may contain `$GROUP_ID` and `$ARTIFACT_ID`	placeholders. "
+	// FYI: We use _GROUP_ID_ as a placeholder, not $GROUP_ID, cause passing a $ would have to be escape on a CLI
+	@Description("The template for the name image being built, which may contain `_GROUP_ID_` and `_ARTIFACT_ID_`	placeholders. "
 			+ " Two tags will be used, one based on the setup version and `latest`. Final values are passed as  `-t` argument of `docker build`.")
 	@Mandatory
 	String getImageNameTemplate();
