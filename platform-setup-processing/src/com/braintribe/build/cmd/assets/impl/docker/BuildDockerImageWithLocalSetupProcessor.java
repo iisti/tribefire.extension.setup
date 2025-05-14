@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,8 +43,8 @@ import com.braintribe.utils.FileTools;
 /**
  * Processor for {@link BuildDockerImageWithLocalSetup}.
  * <p>
- * It builds and optionally pushes a single Docker image with a Hiconic application built via {@link SetupLocalTomcatPlatform} (see the request for
- * more details).
+ * It builds and optionally pushes a single Docker image with a Hiconic application (already built via {@link SetupLocalTomcatPlatform} - see the
+ * request for more details).
  */
 public class BuildDockerImageWithLocalSetupProcessor {
 
@@ -146,9 +148,13 @@ public class BuildDockerImageWithLocalSetupProcessor {
 		println(sequence(text("Image name: "), yellow(imageName)));
 
 		latestTag = imageName + ":latest";
-		versionedTag = imageName + ":" + vai.getVersion();
+		versionedTag = imageName + ":" + vai.getVersion() + "_" + currentTimestamp();
 
 		return true;
+	}
+
+	private String currentTimestamp() {
+		return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd-HHmm"));
 	}
 
 	// ######################################################

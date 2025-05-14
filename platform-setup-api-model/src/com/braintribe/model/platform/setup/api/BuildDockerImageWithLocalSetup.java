@@ -60,7 +60,7 @@ public interface BuildDockerImageWithLocalSetup extends SetupRequest {
 
 	@Description("Specifies the base image, i.e. the image used in the FROM instruction of the Dockerfile. "
 			+ "For now, we use the base CI/CD image with Java as default.")
-	@Initializer("'ghcr.io/hiconic-os/ci-base/main:latest'")
+	@Initializer("'ghcr.io/hiconic-os/runtime-base:latest'")
 	String getBaseImage();
 	void setBaseImage(String baseImage);
 
