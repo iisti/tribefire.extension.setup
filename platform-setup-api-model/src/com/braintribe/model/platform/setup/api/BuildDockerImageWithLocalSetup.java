@@ -41,7 +41,7 @@ public interface BuildDockerImageWithLocalSetup extends SetupRequest {
 	@Override
 	EvalContext<Neutral> eval(Evaluator<ServiceRequest> evaluator);
 
-	@Description("The directory that was used as installationPath for setup-local-tomcat-platform.")
+	@Description("The directory that was used as installationPath for `setup-local-tomcat-platform`.")
 	@FolderName
 	@Mandatory
 	String getInstallationPath();
@@ -58,8 +58,7 @@ public interface BuildDockerImageWithLocalSetup extends SetupRequest {
 	boolean getPush();
 	void setPush(boolean push);
 
-	@Description("Specifies the base image, i.e. the image used in the FROM instruction of the Dockerfile. "
-			+ "For now, we use the base CI/CD image with Java as default.")
+	@Description("Specifies the base image, i.e. the image used in the FROM instruction of the Dockerfile.")
 	@Initializer("'ghcr.io/hiconic-os/runtime-base:latest'")
 	String getBaseImage();
 	void setBaseImage(String baseImage);
