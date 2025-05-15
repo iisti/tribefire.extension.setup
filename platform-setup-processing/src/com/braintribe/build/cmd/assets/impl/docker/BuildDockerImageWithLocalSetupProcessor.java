@@ -204,6 +204,12 @@ public class BuildDockerImageWithLocalSetupProcessor {
 
 		List<String> cmd = CollectionTools.getList("docker", "build", ".", "-t", latestTag, "-f", DOCKERFILE_NAME);
 
+		String label = request.getLabel();
+		if (label != null) {
+			cmd.add("--label");
+			cmd.add(label);
+		}
+
 		if (request.getPullUpdatedBaseImage())
 			cmd.add("--pull");
 

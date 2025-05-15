@@ -63,6 +63,10 @@ public interface BuildDockerImageWithLocalSetup extends SetupRequest {
 	String getBaseImage();
 	void setBaseImage(String baseImage);
 
+	@Description("Specifies the `--label` argument of `docker build`.")
+	String getLabel();
+	void setLabel(String label);
+
 	@Description("Whether or not to pull the base image, if a newer version is available. Adds `--pull` to `docker build`.")
 	@Initializer("true")
 	boolean getPullUpdatedBaseImage();
