@@ -173,7 +173,7 @@ public class Jinni {
 
 		if (error != null) {
 			printErrorMessage(error);
-			return;
+			System.exit(1);
 		}
 
 		validateRequest();
