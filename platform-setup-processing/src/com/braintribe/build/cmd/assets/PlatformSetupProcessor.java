@@ -1173,8 +1173,9 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 	private GenericEntity deriveDenotation(PredefinedComponent use, GenericEntity denotation, SetupLocalTomcatPlatform request, boolean defaulting) {
 		
 		switch (use) {
+			case MQ:
 			case ADMIN_USER:
-				return defaulting? null: denotation;
+				return defaulting ? null: denotation;
 				
 			case DCSA_SHARED_STORAGE: {
 				JdbcPlugableDcsaSharedStorage sharedStorage = null;
