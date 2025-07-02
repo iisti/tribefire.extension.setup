@@ -153,6 +153,7 @@ import com.braintribe.model.platform.setup.api.CheckGroup;
 import com.braintribe.model.platform.setup.api.CreateBackup;
 import com.braintribe.model.platform.setup.api.CreateProject;
 import com.braintribe.model.platform.setup.api.CreateTribefireRuntimeManifest;
+import com.braintribe.model.platform.setup.api.Decrypt;
 import com.braintribe.model.platform.setup.api.Encrypt;
 import com.braintribe.model.platform.setup.api.FileSystemPlatformSetupConfig;
 import com.braintribe.model.platform.setup.api.GetAssetDependencies;
@@ -304,6 +305,7 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 		dispatching.register(CreateBackup.T,                         (c, r) -> createBackup(r));
 		dispatching.register(RestoreBackup.T,                        (c, r) -> restoreBackup(r));
 		dispatching.register(Encrypt.T,                              (c, r) -> encrypt(r));
+		dispatching.register(Decrypt.T,                              (c, r) -> decrypt(r));
 		dispatching.register(GetAssetDependencies.T,                 (c, r) -> getAssetDependencies(c, r));
 		dispatching.register(SetupRepositoryConfiguration.T,         (c, r) -> setupRepositoryConfiguration(r));
 		dispatching.register(GetLockedVersions.T,                    (c, r) -> getLockedVersions(r));
@@ -967,17 +969,36 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 		String keyFactoryAlgorithm = request.getKeyFactoryAlgorithm();
 		String secret = request.getSecret();
 		int keyLength = request.getKeyLength();
-		String value = request.getValue();
+		String plaintext = request.getValue();
 
         try {
-        	String encoded = Cryptor.encrypt(secret, algorithm, keyFactoryAlgorithm, keyLength, value);
+			String base64Ciphertext = Cryptor.encrypt(secret, algorithm, keyFactoryAlgorithm, keyLength, plaintext);
 
-			println(ConsoleOutputs.brightBlack(encoded));
+			println(ConsoleOutputs.brightBlack(base64Ciphertext));
 
-			return encoded;
+			return base64Ciphertext;
 
         } catch (Exception e) {
 			throw Exceptions.unchecked(e, "Error while encrypting value");
+		}
+	}
+
+	private String decrypt(Decrypt request) {
+		String algorithm = request.getAlgorithm();
+		String keyFactoryAlgorithm = request.getKeyFactoryAlgorithm();
+		String secret = request.getSecret();
+		int keyLength = request.getKeyLength();
+		String base64Ciphertext = request.getValue();
+
+		try {
+			String plaintext = Cryptor.decrypt(secret, algorithm, keyFactoryAlgorithm, keyLength, base64Ciphertext);
+
+			println(ConsoleOutputs.brightBlack(plaintext));
+
+			return plaintext;
+
+		} catch (Exception e) {
+			throw Exceptions.unchecked(e, "Error while decrypting value");
 		}
 	}
 

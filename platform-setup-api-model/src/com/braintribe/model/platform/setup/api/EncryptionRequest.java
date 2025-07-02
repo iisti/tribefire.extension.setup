@@ -1,6 +1,4 @@
 // ============================================================================
-// Copyright BRAINTRIBE TECHNOLOGY GMBH, Austria, 2002-2022
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,23 +13,42 @@
 // ============================================================================
 package com.braintribe.model.platform.setup.api;
 
-import com.braintribe.model.generic.annotation.meta.Confidential;
+import com.braintribe.model.generic.annotation.Abstract;
+import com.braintribe.model.generic.annotation.Initializer;
 import com.braintribe.model.generic.annotation.meta.Mandatory;
+import com.braintribe.model.generic.annotation.meta.PositionalArguments;
 import com.braintribe.model.generic.eval.EvalContext;
 import com.braintribe.model.generic.eval.Evaluator;
 import com.braintribe.model.generic.reflection.EntityType;
 import com.braintribe.model.generic.reflection.EntityTypes;
 import com.braintribe.model.service.api.ServiceRequest;
 
-public interface Encrypt extends EncryptionRequest {
+@Abstract
+@PositionalArguments("value")
+public interface EncryptionRequest extends SetupRequest {
 
-	EntityType<Encrypt> T = EntityTypes.T(Encrypt.class);
+	EntityType<EncryptionRequest> T = EntityTypes.T(EncryptionRequest.class);
+	
+	@Initializer("'AES/CBC/PKCS5Padding'")
+	String getAlgorithm();
+	void setAlgorithm(String algorithm);
+	
+	@Initializer("'c36e99ec-e108-11e8-9f32-f2801f1b9fd1'")
+	String getSecret();
+	void setSecret(String secret);
+	
+	@Initializer("'PBKDF2WithHmacSHA1'")
+	String getKeyFactoryAlgorithm();
+	void setKeyFactoryAlgorithm(String keyFactoryAlgorithm);
+	
+	@Initializer("128")
+	int getKeyLength();
+	void setKeyLength(int keyLength);
 
-	@Override
-	@Confidential
 	@Mandatory
 	String getValue();
-
+	void setValue(String value);
+	
 	@Override
 	EvalContext<String> eval(Evaluator<ServiceRequest> evaluator);
 
