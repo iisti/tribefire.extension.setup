@@ -54,6 +54,12 @@ public interface BuildDockerImageWithLocalSetup extends SetupRequest {
 	String getImageNameTemplate();
 	void setImageNameTemplate(String imageNameTemplate);
 
+	@Description("If set, the build process will add this additional tag besides the `latest` and `version`, which will not be pushed. "
+			+ "This is useful e.g. for pipelines that want to further handle the built image and need to know the name to reference it. "
+			+ "Passed as: `docker tag ${latestTag} ${additionalImageName}`.")
+	String getAdditionalImageName();
+	void setAdditionalImageName(String additionalImageName);
+
 	@Description("Whether or not to push Docker images after building.")
 	boolean getPush();
 	void setPush(boolean push);

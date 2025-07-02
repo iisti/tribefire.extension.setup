@@ -39,6 +39,7 @@ import com.braintribe.model.platform.setup.api.data.SetupDescriptor;
 import com.braintribe.model.service.api.result.Neutral;
 import com.braintribe.utils.CollectionTools;
 import com.braintribe.utils.FileTools;
+import com.braintribe.utils.lcd.StringTools;
 
 /**
  * Processor for {@link BuildDockerImageWithLocalSetup}.
@@ -94,6 +95,7 @@ public class BuildDockerImageWithLocalSetupProcessor {
 				prepareDockerfile() && //
 				buildLatestDockerImage() && //
 				tagLatestDockerImageWithVersion() && //
+				tagLatestDockerImageWithAdditionalName() && //
 				pushDockerImagesIfRequested();
 	}
 
@@ -223,6 +225,18 @@ public class BuildDockerImageWithLocalSetupProcessor {
 		println("Tagging latest Docker image with version...");
 
 		return runCommand(Arrays.asList("docker", "tag", latestTag, versionedTag));
+	}
+
+	private boolean tagLatestDockerImageWithAdditionalName() {
+		String name = request.getAdditionalImageName();
+		if (StringTools.isEmpty(name)) {
+			println("No additional image name will be applied.");
+			return true;
+		}
+
+		println("Tagging latest Docker image with additional name...");
+
+		return runCommand(Arrays.asList("docker", "tag", latestTag, name));
 	}
 
 	private boolean pushDockerImagesIfRequested() {
