@@ -19,8 +19,9 @@ public interface PlatformAssetDistributionConstants extends PlatformAssetResolvi
 	
 	String MODULES_DIR_NAME = "modules";
 	String UX_MODULES_YAML_NAME = "ux-modules.yaml";
-	
-	String FOLDER_ENVIRONMENT = "environment";
+
+	String FOLDER_CONF = "conf"; // Files that are simply copied along the way are placed under tribefire-master/conf
+	String FOLDER_ENVIRONMENT = "environment"; // tribefire.propertires are appended and this is done in tribefire-master/environment
 	String FILE_TRIBEFIRE_PROPERTIES = "tribefire.properties";
 	String FILE_CONFIGURATION_SHARED_JSON = "configuration.shared.json";
 	String FILE_CONFIGURATION_JSON = "configuration.json";

@@ -579,6 +579,7 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 		if (!omitContainerSpecificAssets) {
 			// write dynamic properties and merge with asset properties and write to conf/tribefire.properties
 			setupRuntimeProperties(context, denotation, packagedPlatformSetup, packageBaseDir, installationPath, documentationPackaged);
+			copyConfFiles(packageBaseDir, installationPath);
 		}
 		
 		// project templates (i.e. the templates in the tomcat-runtime-asset in projection folder)
@@ -1391,11 +1392,18 @@ public class PlatformSetupProcessor extends AbstractDispatchingServiceProcessor<
 					IOTools.transferBytes(in, out, IOTools.BUFFER_SUPPLIER_8K);
 				}
 			}
-		}
-		catch (IOException e) {
+
+		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
+	}
 
+	private void copyConfFiles(File packageBaseDir,  File installationPath) {
+		File targetDir = new File(installationPath, "conf");
+		File sourceDir = new File(packageBaseDir, PathList.create().push(PROJECTION_NAME_MASTER).push(FOLDER_CONF).toFilePath());
+
+		outFileTransfer("\nCopying ", "conf files", sourceDir.getAbsolutePath(), targetDir.getAbsolutePath());
+		FileTools.copyDirectoryUnchecked(sourceDir, targetDir);
 	}
 
 	private void writeDcsaSharedStorageMaybe(File confDir, SetupLocalTomcatPlatform denotation) {

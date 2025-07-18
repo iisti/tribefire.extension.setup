@@ -33,6 +33,11 @@ public class RuntimePropertiesCollector implements PlatformAssetCollector, Platf
 	private static final Pattern PATTERN_TRIBEFIRE_PROPERTIES = Pattern.compile("tribefire-(\\d+)\\.properties");
 	private int sequence = 0;
 
+	/**
+	 * Writes a part of the final tribefire.properties file as "tribefire-{seq-num}.properties".
+	 *
+	 * @see #transfer
+	 */
 	public void appendPropertySection(PlatformAssetBuilderContext<?> context, String title, Map<String, String> propertyMap) {
 		String propertiesFileName = String.format("tribefire-%d.properties", sequence++);
 		File file = context.registerPackageFile(context.projectionBaseFolder(true).push(FOLDER_ENVIRONMENT).push(propertiesFileName));
@@ -58,7 +63,11 @@ public class RuntimePropertiesCollector implements PlatformAssetCollector, Platf
 			throw Exceptions.unchecked(e, "Error while writing runtime properties to " + file.getAbsolutePath());
 		}
 	}
-	
+
+	/**
+	 * Merges partial files written by {@link #appendPropertySection} into a single "tribefire.properties" file inside the environment folder and
+	 * deletes the partial files.
+	 */
 	@Override
 	public void transfer(PlatformAssetDistributionContext context) {
 		for (File file: context.getPackageBaseDir().listFiles()) {
