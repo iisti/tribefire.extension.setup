@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+umask 002
+
+# copy relevant files to /writable folder, which is either just a writable folder on the same file system or a mount for a separate, writable file system.
+find /to-be-writable -mindepth 1 -maxdepth 1 -exec cp -a -t /writable/ {} +
+# usually /writeable/run already exists (not because it was copied in previous line, but due to mounted secret). but if it doesn't, just create empty folder.
+if [ ! -d /writable/run ]; then mkdir -p /writable/run; fi
+
+exec "$@"

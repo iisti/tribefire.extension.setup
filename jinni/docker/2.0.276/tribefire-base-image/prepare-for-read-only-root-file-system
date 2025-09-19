@@ -1,0 +1,57 @@
+#!/bin/sh
+set -e
+
+temporaryTargetBaseFolder='/to-be-writable'
+finalTargetBaseFolder='/writable'
+
+if [ "${1}" = "--root-user-mode=true" ]; then
+	rootUserModeEnabled='true'
+elif [ "${1}" = "--root-user-mode=false" ]; then
+	rootUserModeEnabled='false'
+else
+	echo 'Parameter --root-user-mode not specified!'
+	exit 1
+fi
+
+# prepare base folders
+mkdir -p "${temporaryTargetBaseFolder}"
+chmod 755 "${temporaryTargetBaseFolder}"
+
+mkdir -p "${finalTargetBaseFolder}"
+chmod 775 "${finalTargetBaseFolder}"
+
+# for each path, move to temporary folder and then create symlink at original location pointing to final folder
+for path in \
+	/home \
+	/opt/tribefire \
+	/root \
+	/run \
+	/tmp \
+	/usr/share/fonts \
+	/var/lib \
+	/var/log \
+	/var/tmp
+do
+	if [ "${path}" = '/root' ] && [ "${rootUserModeEnabled}" = 'false' ]; then
+		continue
+	fi
+
+	# set target paths
+	temporaryTarget="${temporaryTargetBaseFolder}${path}"
+	finalTarget="${finalTargetBaseFolder}${path}"
+
+	# create parent directories in case they don't exist
+	mkdir -p "$(dirname "${temporaryTarget}")"
+
+	# move to temporary target
+	mv "${path}" "${temporaryTarget}"
+
+	# create symlink pointing to final target
+	ln -s "${finalTarget}" "${path}"
+
+	# special handling for '/run' folder: just the symlink is needed (see above), but the folder will be created
+	# (usually due to mounted secret), hence there is no need to have this in temporary target folder.
+	if [ "${path}" = '/run' ]; then
+		rmdir "${temporaryTarget}"
+	fi
+done
