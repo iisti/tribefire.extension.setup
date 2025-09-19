@@ -166,7 +166,7 @@ public class BuildDockerImagesProcessor {
 	private static final String DOCKER_RESOURCES_VERSION__2_0_275 = "2.0.275";
 	// switch to Debian Trixie and JDK 25 (older versions of tribefire may also work with this JDK, but they haven't been tested with it)
 	@SuppressWarnings("unused") // no version specific processor code required
-	private static final String DOCKER_RESOURCES_VERSION__2_0_276 = "2.0.276";
+	private static final String DOCKER_RESOURCES_VERSION__2_0_282 = "2.0.282";
 
 
 	private static final Logger logger = Logger.getLogger(BuildDockerImagesProcessor.class);
