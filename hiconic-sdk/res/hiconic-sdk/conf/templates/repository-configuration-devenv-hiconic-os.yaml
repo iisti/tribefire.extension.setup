@@ -25,5 +25,10 @@
       name: "third-party",
       url: "https://repo1.maven.org/maven2/",
     },
+    # Required at least by com.github.Cloudmersive:Cloudmersive.APIClient.Java
+    !com.braintribe.devrock.model.repository.MavenHttpRepository {
+      name: "third-party-02",
+      url: "https://repository.liferay.com/nexus/content/repositories/public/",
+    },
   ]
 }
